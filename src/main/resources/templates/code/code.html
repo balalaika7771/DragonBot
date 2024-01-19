@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>String List</title>
+</head>
+<body>
+
+<h2>String List</h2>
+
+<!-- Отображение списка строк -->
+<ul>
+    <li th:each="codeDTO : ${codeList}">
+        <span th:text="${codeDTO.getCode()}"></span>
+        <!-- Кнопка для удаления строки -->
+        <form th:action="@{/code/delete}" method="post">
+            <input type="hidden" th:name="code" th:value="${codeDTO}">
+            <button type="submit">Delete</button>
+        </form>
+    </li>
+</ul>
+
+<!-- Пагинация -->
+<div th:if="${totalPages > 1}">
+    <ul class="pagination">
+        <li th:each="pageNumber : ${#numbers.sequence(0, totalPages - 1)}" th:class="${pageNumber == currentPage ? 'active' : ''}">
+            <a th:href="@{/code(page=${pageNumber})}" th:text="${pageNumber + 1}"></a>
+        </li>
+    </ul>
+</div>
+
+<!-- Форма для добавления новой строки -->
+<form th:action="@{/code/add}" method="post">
+    <label for="newString">New String:</label>
+    <input type="text" id="newString" name="newString" required>
+    <button type="submit">Add</button>
+</form>
+
+</body>
+</html>
