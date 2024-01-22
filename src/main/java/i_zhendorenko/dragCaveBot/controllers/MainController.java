@@ -8,9 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import i_zhendorenko.dragCaveBot.security.PersonDetails;
 import i_zhendorenko.dragCaveBot.services.AdminService;
 
-/**
- * @author Neil Alishev
- */
+
 @Controller
 public class MainController {
     private final AdminService adminService;

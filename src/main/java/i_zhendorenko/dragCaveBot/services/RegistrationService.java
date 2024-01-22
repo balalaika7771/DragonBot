@@ -6,9 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import i_zhendorenko.dragCaveBot.models.Person;
 
-/**
- * @author Neil Alishev
- */
+
 @Service
 public class RegistrationService {
 

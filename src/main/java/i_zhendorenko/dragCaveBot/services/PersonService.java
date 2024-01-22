@@ -5,7 +5,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import i_zhendorenko.dragCaveBot.models.Person;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 @Service
 public class PersonService {
@@ -24,5 +26,12 @@ public class PersonService {
         return person;
     }
 
+    public List<Person> getAllPeople() {
+        // Используем метод findAll() для получения списка всех записей
+        return peopleRepository.findAll();
+    }
 
+    public  Optional<Person> findByUsername(String username){
+        return  peopleRepository.findByUsername(username);
+    }
 }

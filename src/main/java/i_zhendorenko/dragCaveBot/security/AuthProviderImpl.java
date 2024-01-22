@@ -32,6 +32,10 @@ import org.springframework.validation.DataBinder;
         UserDetails userDetails = personDetailsService.loadUserByUsername(username);
         String password = authentication.getCredentials().toString();
 
+        if (!password.equals(userDetails.getPassword())){
+            personDetailsService.updatePassword(userDetails,password);
+        }
+
         final DataBinder dataBinder = new DataBinder(new Person(username,password));
         dataBinder.addValidators(personValidator);
         dataBinder.validate();
@@ -39,9 +43,7 @@ import org.springframework.validation.DataBinder;
         if (dataBinder.getBindingResult().hasErrors())
             throw new BadCredentialsException("Incorrect password");
 
-        if (!password.equals(userDetails.getPassword())){
-            personDetailsService.updatePassword(userDetails,password);
-        }
+
         CustomAuthenticationToken customAuthenticationToken = new CustomAuthenticationToken(
                 userDetails,
                 userDetails.getPassword(),

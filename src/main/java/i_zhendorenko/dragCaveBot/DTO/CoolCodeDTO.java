@@ -1,17 +1,17 @@
 package i_zhendorenko.dragCaveBot.DTO;
 
-import i_zhendorenko.dragCaveBot.models.Code;
+import i_zhendorenko.dragCaveBot.models.CoolCode;
 
 import javax.persistence.Column;
 import javax.validation.constraints.NotEmpty;
 
-public class CodeDTO {
-    public CodeDTO(){}
-    public CodeDTO(String code){
+public class CoolCodeDTO {
+    public CoolCodeDTO(){}
+    public CoolCodeDTO(String code){
         this.mycode = code;
     }
-    public CodeDTO(Code code){
-        this.mycode = code.getCode();
+    public CoolCodeDTO(CoolCode coolCode){
+        this.mycode = coolCode.getCode();
     }
 
     @Override
@@ -20,14 +20,14 @@ public class CodeDTO {
     }
     @Override
     public boolean equals(Object code){
-        if (!(code instanceof CodeDTO)){
+        if (!(code instanceof CoolCodeDTO)){
             return false;
         }
 
-        return ((CodeDTO)code).getCode().equals(mycode);
+        return ((CoolCodeDTO)code).getCode().equals(mycode);
     }
-    public boolean equals(Code code){
-        return code.getCode().equals(mycode);
+    public boolean equals(CoolCode coolCode){
+        return coolCode.getCode().equals(mycode);
     }
     @NotEmpty(message = "code не должно быть пустым")
     @Column(name = "code")

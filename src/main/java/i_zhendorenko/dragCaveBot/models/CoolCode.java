@@ -5,9 +5,9 @@ import javax.validation.constraints.NotEmpty;
 
 @Entity
 @Table(name = "Code")
-public class Code {
-    public Code(){}
-    public Code(String code, Person person){
+public class CoolCode {
+    public CoolCode(){}
+    public CoolCode(String code, Person person){
         this.code = code;
         this.person = person;
     }

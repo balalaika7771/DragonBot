@@ -1,9 +1,9 @@
 package i_zhendorenko.dragCaveBot.controllers;
 
-import i_zhendorenko.dragCaveBot.DTO.CodeDTO;
-import i_zhendorenko.dragCaveBot.models.Code;
+import i_zhendorenko.dragCaveBot.DTO.CoolCodeDTO;
+import i_zhendorenko.dragCaveBot.models.CoolCode;
 import i_zhendorenko.dragCaveBot.security.PersonDetails;
-import i_zhendorenko.dragCaveBot.services.CodeService;
+import i_zhendorenko.dragCaveBot.services.CoolCodeService;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -18,18 +18,17 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.validation.constraints.NotEmpty;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Controller
-public class CodeController {
+public class CoolCodeController {
 
-    private final CodeService codeService;
+    private final CoolCodeService coolCodeService;
 
-    public CodeController( CodeService codeService) {
-        this.codeService = codeService;
+    public CoolCodeController(CoolCodeService coolCodeService) {
+        this.coolCodeService = coolCodeService;
     }
 
-    @GetMapping("/code")
+    @GetMapping("/coolCode")
     public String showStrings(Model model,
                               @RequestParam(defaultValue = "0") int page,
                               @RequestParam(defaultValue = "5") int size) {
@@ -44,16 +43,16 @@ public class CodeController {
         PageRequest pageable = PageRequest.of(page, size);
 
         // Получаем страницу объектов CodeDTO
-        Page<CodeDTO> codePage = codeService.getAllCodesByPersonPaged(((PersonDetails) principal).getPerson(), pageable)
-                .map(CodeDTO::new);
+        Page<CoolCodeDTO> coolCodePage = coolCodeService.getAllCodesByPersonPaged(((PersonDetails) principal).getPerson(), pageable)
+                .map(CoolCodeDTO::new);
 
-        model.addAttribute("codeList", codePage.getContent()); // Список текущей страницы
+        model.addAttribute("coolCodeList", coolCodePage.getContent()); // Список текущей страницы
         model.addAttribute("currentPage", page);
-        model.addAttribute("totalPages", codePage.getTotalPages());
+        model.addAttribute("totalPages", coolCodePage.getTotalPages());
         return "code/code";
     }
 
-    @PostMapping("/code/add")
+    @PostMapping("/coolCode/add")
     public String addString(@NotNull @NotEmpty String newString) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Object principal = authentication.getPrincipal();
@@ -61,12 +60,12 @@ public class CodeController {
             //TODO ощибка
             return "code/code";
         }
-        codeService.addCode(new Code(newString.trim(),((PersonDetails)principal).getPerson()));
-        return "redirect:/code";
+        coolCodeService.addCode(new CoolCode(newString.trim(),((PersonDetails)principal).getPerson()));
+        return "redirect:/coolCode";
     }
 
-    @PostMapping("/code/delete")
-    public String deleteString(@ModelAttribute("codeDTO") CodeDTO icode) {
+    @PostMapping("/coolCode/delete")
+    public String deleteString(@ModelAttribute("coolCode") CoolCodeDTO icode) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Object principal = authentication.getPrincipal();
@@ -75,11 +74,11 @@ public class CodeController {
             return "code/code";
         }
 
-        List<Code> codeList = codeService.getAllCodesByPerson(((PersonDetails)principal).getPerson());
+        List<CoolCode> coolCodeList = coolCodeService.getAllCodesByPerson(((PersonDetails)principal).getPerson());
 
-        codeList.stream().
+        coolCodeList.stream().
                 filter(icode::equals)
-                .forEach(codeService::deleteCode);
-        return "redirect:/code";
+                .forEach(coolCodeService::deleteCode);
+        return "redirect:/coolCode";
     }
 }

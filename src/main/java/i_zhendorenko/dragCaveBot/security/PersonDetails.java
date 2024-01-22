@@ -8,9 +8,6 @@ import i_zhendorenko.dragCaveBot.models.Person;
 import java.util.Collection;
 import java.util.Collections;
 
-/**
- * @author Neil Alishev
- */
 public class PersonDetails implements UserDetails {
     private final Person person;
 

@@ -11,9 +11,7 @@ import i_zhendorenko.dragCaveBot.models.Person;
 
 import java.util.Optional;
 
-/**
- * @author Neil Alishev
- */
+
 @Service
 public class PersonDetailsService implements UserDetailsService {
 

@@ -5,9 +5,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 import java.util.List;
 
-/**
- * @author Neil Alishev
- */
+
 @Entity
 @Table(name = "Person")
 public class Person {
@@ -28,8 +26,9 @@ public class Person {
     private String role;
 
     @OneToMany(mappedBy = "person", cascade = CascadeType.ALL)
-    private List<Code> codes;
-
+    private List<CoolCode> coolCodes;
+    @OneToMany(mappedBy = "person")
+    private List<CookieAuth> cookieAuths;
     // Конструктор по умолчанию нужен для Spring
     public Person() {
     }
@@ -72,12 +71,12 @@ public class Person {
         this.role = role;
     }
 
-    public List<Code> getCodes() {
-        return codes;
+    public List<CoolCode> getCodes() {
+        return coolCodes;
     }
 
-    public void setCodes(List<Code> codes) {
-        this.codes = codes;
+    public void setCodes(List<CoolCode> coolCodes) {
+        this.coolCodes = coolCodes;
     }
 
     @Override
@@ -88,4 +87,5 @@ public class Person {
                 ", password='" + password + '\'' +
                 '}';
     }
+
 }

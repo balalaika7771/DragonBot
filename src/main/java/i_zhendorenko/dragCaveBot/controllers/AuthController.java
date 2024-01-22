@@ -13,9 +13,7 @@ import i_zhendorenko.dragCaveBot.util.PersonValidator;
 
 import javax.validation.Valid;
 
-/**
- * @author Neil Alishev
- */
+
 @Controller
 @RequestMapping("/auth")
 public class AuthController {
