@@ -9,5 +9,5 @@ import java.util.Optional;
 
 @Repository
 public interface CookieAuthRepository extends JpaRepository<CookieAuth, Long> {
-    Optional<CookieAuth> findTopByPersonOrderByCreatedAtDesc(Person person);
+    Optional<CookieAuth> findTopByPersonOrderByIdDesc(Person person);
 }

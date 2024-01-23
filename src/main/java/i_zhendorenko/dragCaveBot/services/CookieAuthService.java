@@ -27,6 +27,6 @@ public class CookieAuthService {
     }
 
     public Optional<CookieAuth> getLastCookieAuthByPerson(Person person) {
-        return cookieAuthRepository.findTopByPersonOrderByCreatedAtDesc(person);
+        return cookieAuthRepository.findTopByPersonOrderByIdDesc(person);
     }
 }
