@@ -1,5 +1,6 @@
 package i_zhendorenko.dragCaveBot.services;
 
+import i_zhendorenko.dragCaveBot.POJO.MyHttpResponse;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -11,26 +12,31 @@ import java.util.List;
 
 @Service
 public class HttpClientService {
-    public String sendRequestWithCookies(String url,List<String> cookies) {
-        // Установка заголовков запроса, включая куки
+    public static ResponseEntity<String> sendGetRequest(String url, List<String> cookies) {
+
+        HttpHeaders requestHeaders = new HttpHeaders();
+        requestHeaders.put(HttpHeaders.COOKIE, cookies);
+
+        HttpEntity<?> requestEntity = new HttpEntity<>(requestHeaders);
+        ResponseEntity<String> responseEntity = new RestTemplate().exchange(
+                url,
+                HttpMethod.GET,
+                requestEntity,
+                String.class
+        );
+        return responseEntity;
+    }
+    public static ResponseEntity<String> sendGetRequest(String url, HttpHeaders requestHeaders,List<String> cookies) {
         HttpHeaders headers = new HttpHeaders();
         headers.addAll("Cookie", cookies);
 
-        // Создание объекта запроса с заголовками
-        HttpEntity<String> requestEntity = new HttpEntity<>(headers);
-
-        // Создание объекта RestTemplate
-        RestTemplate restTemplate = new RestTemplate();
-
-        // Отправка GET-запроса с использованием куки
-        ResponseEntity<String> responseEntity = restTemplate.exchange(
-                url, // URL вашего запроса
+        HttpEntity<?> requestEntity = new HttpEntity<>(headers);
+        ResponseEntity<String> responseEntity = new RestTemplate().exchange(
+                url,
                 HttpMethod.GET,
                 requestEntity,
-                String.class);
-        // Получение тела ответа
-        String responseBody = responseEntity.getBody();
-
-        return responseBody;
+                String.class
+        );
+        return responseEntity;
     }
 }

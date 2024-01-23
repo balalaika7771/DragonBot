@@ -60,8 +60,14 @@ public class CoolCodeController {
             //TODO ощибка
             return "code/code";
         }
-        coolCodeService.addCode(new CoolCode(newString.trim(),((PersonDetails)principal).getPerson()));
-        return "redirect:/coolCode";
+        String[] wordsArray = newString.split(" ");
+
+        // Выводим результат
+        for (String word : wordsArray) {
+            coolCodeService.addCode(new CoolCode(word.trim(),((PersonDetails)principal).getPerson()));
+
+        }
+         return "redirect:/coolCode";
     }
 
     @PostMapping("/coolCode/delete")

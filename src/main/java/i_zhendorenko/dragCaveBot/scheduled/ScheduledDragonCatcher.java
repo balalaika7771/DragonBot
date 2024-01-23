@@ -2,11 +2,14 @@ package i_zhendorenko.dragCaveBot.scheduled;
 
 
 import i_zhendorenko.dragCaveBot.POJO.Code;
+import i_zhendorenko.dragCaveBot.POJO.MyHttpResponse;
 import i_zhendorenko.dragCaveBot.models.CookieAuth;
+import i_zhendorenko.dragCaveBot.models.CoolCode;
 import i_zhendorenko.dragCaveBot.models.Person;
 import i_zhendorenko.dragCaveBot.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -24,7 +27,7 @@ public class ScheduledDragonCatcher {
     PersonService personService;
     HttpClientService httpClientService;
     DragonAuthService dragonAuthService;
-
+    CoolCodeService coolCodeService;
     ResponseEjector responseEjector;
     @Scheduled(fixedDelay = 10000)
     public void CatchWithCoolCode() {
@@ -34,15 +37,26 @@ public class ScheduledDragonCatcher {
             if(lastCookieAuth.isEmpty()){
                 continue;
             }
-            List<Code> codes = new LinkedList<Code>();
+            List<CoolCode> coolCodes = coolCodeService.getAllCodesByPerson(person);
             List<String> cookies = lastCookieAuth.get().getCookies();
             for(String url : urlList){
-                String Response = httpClientService.sendRequestWithCookies(url,cookies);
-                codes.addAll(responseEjector.ejectCode(Response)) ;
+                List<Code> codes = new LinkedList<Code>();
+                ResponseEntity<String> Response = HttpClientService.sendGetRequest(url,cookies);
+                codes.addAll(responseEjector.ejectCode(Response.getBody())) ;
+                for (Code code: codes){
+                    for(CoolCode coolcode: coolCodes){
+                        if(code.getSampleCode().contains(coolcode.getCode())){
+                            System.out.println(code);
+                            HttpClientService.sendGetRequest(code.getUrl(),Response.getHeaders(),cookies);
+                            break;
+                        }
+                    }
+                }
+                System.out.println(codes);
             }
+
             //TODO обновление куки если они протухли или были отключены
 
-            System.out.println(codes);
 
         }
     }
@@ -65,5 +79,9 @@ public class ScheduledDragonCatcher {
     @Autowired
     public void setResponseEjector(ResponseEjector responseEjector) {
         this.responseEjector = responseEjector;
+    }
+    @Autowired
+    public void setCoolCodeService(CoolCodeService coolCodeService) {
+        this.coolCodeService = coolCodeService;
     }
 }

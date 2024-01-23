@@ -38,4 +38,17 @@ public class Code {
     public int hashCode() {
         return Objects.hash(getUrl(), code);
     }
+
+    public String getCode() {
+        return code;
+    }
+    public String getSampleCode() {
+        String res = new String(code);
+        res = res.toLowerCase();
+        res = res.replaceAll("9","g");
+        res = res.replaceAll("0","o");
+        res = res.replaceAll("1","l");
+
+        return res;
+    }
 }

@@ -30,7 +30,7 @@ public class ResponseEjector {
         while (matcher.find()) {
             String fullMatch = matcher.group(1);
             String partBeforeSlash = fullMatch.split("/")[0];
-            res.add(new Code("https://dragcave.net/get/abandoned/"+ fullMatch,partBeforeSlash));
+            res.add(new Code("https://dragcave.net/abandoned/"+ fullMatch,partBeforeSlash));
         }
 
         return  res;
