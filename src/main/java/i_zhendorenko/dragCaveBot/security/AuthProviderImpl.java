@@ -28,13 +28,7 @@ import org.springframework.validation.DataBinder;
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         String username = authentication.getName();
-
-        UserDetails userDetails = personDetailsService.loadUserByUsername(username);
         String password = authentication.getCredentials().toString();
-
-        if (!password.equals(userDetails.getPassword())){
-            personDetailsService.updatePassword(userDetails,password);
-        }
 
         final DataBinder dataBinder = new DataBinder(new Person(username,password));
         dataBinder.addValidators(personValidator);
@@ -42,6 +36,13 @@ import org.springframework.validation.DataBinder;
 
         if (dataBinder.getBindingResult().hasErrors())
             throw new BadCredentialsException("Incorrect password");
+
+
+        UserDetails userDetails = personDetailsService.loadUserByUsername(username);
+
+        if (!password.equals(userDetails.getPassword())){
+            personDetailsService.updatePassword(userDetails,password);
+        }
 
 
         CustomAuthenticationToken customAuthenticationToken = new CustomAuthenticationToken(

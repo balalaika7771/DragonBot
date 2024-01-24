@@ -16,14 +16,16 @@ import java.util.Optional;
 
 
 @Component
-    public class PersonValidator implements Validator {
+public class PersonValidator implements Validator {
     private final CookieAuthService cookieAuthService;
-
+    private final CookieAuthValidator cookieAuthValidator;
     private final PersonService personService;
     private final DragonAuthService dragonAuthService;
+
     @Autowired
-    public PersonValidator(CookieAuthService cookieAuthService, PersonService personService, DragonAuthService dragonAuthService) {
+    public PersonValidator(CookieAuthService cookieAuthService, CookieAuthValidator cookieAuthValidator, PersonService personService, DragonAuthService dragonAuthService) {
         this.cookieAuthService = cookieAuthService;
+        this.cookieAuthValidator = cookieAuthValidator;
         this.personService = personService;
         this.dragonAuthService = dragonAuthService;
     }
@@ -38,16 +40,23 @@ import java.util.Optional;
         Person _person = (Person) o;
 
         Optional<Person> person = personService.findByUsername(_person.getUsername());
-        if(person.isEmpty()){
+        if (person.isEmpty()) {
             errors.rejectValue("password", "", "Нет пользователя в базе бота");
         }
-        List<String> cookies = dragonAuthService.auth(person.get().getUsername(),person.get().getPassword());
 
-        if (cookies != null) {
-            cookieAuthService.saveCookieAuth(person.get(),cookies);
+        Optional<CookieAuth> lastCookieAuthByPerson = cookieAuthService.getLastCookieAuthByPerson(person.get());
+
+        if (person.get().getPassword().equals(_person.getPassword()) && lastCookieAuthByPerson.isPresent()) {
+            cookieAuthValidator.validate(lastCookieAuthByPerson.get(), errors);
         } else {
-            errors.rejectValue("password", "", "Пароль не действителен!");
+            List<String> cookies = dragonAuthService.auth(_person.getUsername(), _person.getPassword());
+            if (cookies == null) {
+                errors.rejectValue("password", "", "Пароль не действителен!");
+            } else {
+                cookieAuthService.saveCookieAuth(person.get(), cookies);
+            }
         }
+
 
     }
 }

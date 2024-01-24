@@ -12,21 +12,8 @@ import java.util.List;
 
 @Service
 public class HttpClientService {
-    public static ResponseEntity<String> sendGetRequest(String url, List<String> cookies) {
 
-        HttpHeaders requestHeaders = new HttpHeaders();
-        requestHeaders.put(HttpHeaders.COOKIE, cookies);
-
-        HttpEntity<?> requestEntity = new HttpEntity<>(requestHeaders);
-        ResponseEntity<String> responseEntity = new RestTemplate().exchange(
-                url,
-                HttpMethod.GET,
-                requestEntity,
-                String.class
-        );
-        return responseEntity;
-    }
-    public static ResponseEntity<String> sendGetRequest(String url, HttpHeaders requestHeaders,List<String> cookies) {
+    public static ResponseEntity<String> sendGetRequest(String url,List<String> cookies) {
         HttpHeaders headers = new HttpHeaders();
         headers.addAll("Cookie", cookies);
 

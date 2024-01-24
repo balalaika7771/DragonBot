@@ -1,5 +1,6 @@
 package i_zhendorenko.dragCaveBot.controllers;
 
+import i_zhendorenko.dragCaveBot.util.PersonRegistrarionValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -19,12 +20,12 @@ import javax.validation.Valid;
 public class AuthController {
 
     private final RegistrationService registrationService;
-    private final PersonValidator personValidator;
+    private final PersonRegistrarionValidator personRegistrarionValidator;
 
     @Autowired
-    public AuthController(RegistrationService registrationService, PersonValidator personValidator) {
+    public AuthController(RegistrationService registrationService, PersonRegistrarionValidator personRegistrarionValidator) {
         this.registrationService = registrationService;
-        this.personValidator = personValidator;
+        this.personRegistrarionValidator = personRegistrarionValidator;
     }
 
     @GetMapping("/login")
@@ -40,7 +41,7 @@ public class AuthController {
     @PostMapping("/registration")
     public String performRegistration(@ModelAttribute("person") @Valid Person person,
                                       BindingResult bindingResult) {
-        personValidator.validate(person, bindingResult);
+        personRegistrarionValidator.validate(person, bindingResult);
 
         if (bindingResult.hasErrors())
             return "/auth/registration";

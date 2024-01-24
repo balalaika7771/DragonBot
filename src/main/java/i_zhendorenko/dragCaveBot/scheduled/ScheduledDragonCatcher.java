@@ -30,34 +30,43 @@ public class ScheduledDragonCatcher {
     CoolCodeService coolCodeService;
     ResponseEjector responseEjector;
     @Scheduled(fixedDelay = 10000)
-    public void CatchWithCoolCode() {
+    public void Catch() {
         Iterable<Person> allPersons = personService.getAllPeople();
         for(Person person : allPersons){
+            //получение куки для аутентификации
             Optional<CookieAuth> lastCookieAuth = cookieAuthService.getLastCookieAuthByPerson(person);
             if(lastCookieAuth.isEmpty()){
                 continue;
             }
-            List<CoolCode> coolCodes = coolCodeService.getAllCodesByPerson(person);
             List<String> cookies = lastCookieAuth.get().getCookies();
+
+            //TODO обновление куки если они протухли или были отключены
+
+            //получение шаблонов для кодов
+            List<CoolCode> coolCodes = coolCodeService.getAllCodesByPerson(person);
+
+            //TODO получение списка выбранных драконов
+
+
+            //роходимся по сайтам
             for(String url : urlList){
-                List<Code> codes = new LinkedList<Code>();
+                //получаем ответ от запроса
                 ResponseEntity<String> Response = HttpClientService.sendGetRequest(url,cookies);
-                codes.addAll(responseEjector.ejectCode(Response.getBody())) ;
+
+                //секция для сбора драконов с крутыми именами
+                List<Code> codes = responseEjector.ejectCode(Response.getBody());
                 for (Code code: codes){
                     for(CoolCode coolcode: coolCodes){
                         if(code.getSampleCode().contains(coolcode.getCode())){
                             System.out.println(code);
-                            HttpClientService.sendGetRequest(code.getUrl(),Response.getHeaders(),cookies);
+                            HttpClientService.sendGetRequest(code.getUrl(),cookies);
                             break;
                         }
                     }
                 }
                 System.out.println(codes);
+                //TODO секция для сбора интересных видов драконов
             }
-
-            //TODO обновление куки если они протухли или были отключены
-
-
         }
     }
     @Autowired
