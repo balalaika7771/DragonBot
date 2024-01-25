@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Dragons</title>
+</head>
+<body>
+
+<h2>All Dragons</h2>
+<ul>
+    <!-- Выводим список всех драконов -->
+    <li th:each="dragon : ${allDragons}">
+        <span th:text="${dragon.name}"></span>
+        <span th:if="${dragonsForPerson.contains(dragon)}">(Owned)</span>
+        <form th:action="@{/dragons/add/{dragonId}(dragonId=${dragon.id})}" method="post">
+            <button type="submit">Add to My Dragons</button>
+        </form>
+    </li>
+</ul>
+
+</body>
+</html>

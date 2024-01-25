@@ -2,7 +2,6 @@ package i_zhendorenko.dragCaveBot.scheduled;
 
 
 import i_zhendorenko.dragCaveBot.POJO.Code;
-import i_zhendorenko.dragCaveBot.POJO.MyHttpResponse;
 import i_zhendorenko.dragCaveBot.models.CookieAuth;
 import i_zhendorenko.dragCaveBot.models.CoolCode;
 import i_zhendorenko.dragCaveBot.models.Person;
@@ -13,10 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import javax.validation.constraints.Null;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Component
@@ -29,7 +25,9 @@ public class ScheduledDragonCatcher {
     DragonAuthService dragonAuthService;
     CoolCodeService coolCodeService;
     ResponseEjector responseEjector;
-    @Scheduled(fixedDelay = 10000)
+
+
+    @Scheduled(fixedDelay = 100000)
     public void Catch() {
         Iterable<Person> allPersons = personService.getAllPeople();
         for(Person person : allPersons){
@@ -58,7 +56,7 @@ public class ScheduledDragonCatcher {
                 for (Code code: codes){
                     for(CoolCode coolcode: coolCodes){
                         if(code.getSampleCode().contains(coolcode.getCode())){
-                            System.out.println(code);
+                            System.out.println("Пойман - " + code);
                             HttpClientService.sendGetRequest(code.getUrl(),cookies);
                             break;
                         }

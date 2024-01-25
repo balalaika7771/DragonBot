@@ -47,8 +47,8 @@ public class Code {
         res = res.toLowerCase();
         res = res.replaceAll("9","g");
         res = res.replaceAll("0","o");
-        res = res.replaceAll("1","l");
-
+        res = res.replaceAll("6","b");
+        res = res.replaceAll("1","i");
         return res;
     }
 }

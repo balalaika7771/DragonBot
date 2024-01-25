@@ -27,9 +27,17 @@ public class Person {
 
     @OneToMany(mappedBy = "person", cascade = CascadeType.ALL)
     private List<CoolCode> coolCodes;
+
     @OneToMany(mappedBy = "person")
     private List<CookieAuth> cookieAuths;
-    // Конструктор по умолчанию нужен для Spring
+
+    @ManyToMany
+    @JoinTable(
+            name = "person_dragon",
+            joinColumns = @JoinColumn(name = "person_id"),
+            inverseJoinColumns = @JoinColumn(name = "dragon_id"))
+    private List<Dragon> dragons;
+
     public Person() {
     }
 
@@ -77,6 +85,14 @@ public class Person {
 
     public void setCodes(List<CoolCode> coolCodes) {
         this.coolCodes = coolCodes;
+    }
+
+    public List<Dragon> getDragons() {
+        return dragons;
+    }
+
+    public void setDragons(List<Dragon> dragons) {
+        this.dragons = dragons;
     }
 
     @Override

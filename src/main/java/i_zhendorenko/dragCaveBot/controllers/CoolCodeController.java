@@ -31,7 +31,7 @@ public class CoolCodeController {
     @GetMapping("/coolCode")
     public String showStrings(Model model,
                               @RequestParam(defaultValue = "0") int page,
-                              @RequestParam(defaultValue = "5") int size) {
+                              @RequestParam(defaultValue = "20") int size) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Object principal = authentication.getPrincipal();
         if (!(principal instanceof PersonDetails)) {

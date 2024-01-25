@@ -1,5 +1,6 @@
 package i_zhendorenko.dragCaveBot.services;
 
+import i_zhendorenko.dragCaveBot.models.Dragon;
 import i_zhendorenko.dragCaveBot.repositories.PeopleRepository;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -34,4 +35,17 @@ public class PersonService {
     public  Optional<Person> findByUsername(String username){
         return  peopleRepository.findByUsername(username);
     }
+
+    public List<Person> findPersonsByDragon(Dragon dragon) {
+        return peopleRepository.findByDragons(dragon);
+    }
+
+    public void addDragonToPerson(int personId, Dragon dragon) {
+        Person person = peopleRepository.findById(personId)
+                .orElseThrow(() -> new RuntimeException("Person not found"));
+        person.getDragons().add(dragon);
+        peopleRepository.save(person);
+    }
+
+
 }

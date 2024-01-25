@@ -1,6 +1,5 @@
 package i_zhendorenko.dragCaveBot.services;
 
-import i_zhendorenko.dragCaveBot.POJO.MyHttpResponse;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
