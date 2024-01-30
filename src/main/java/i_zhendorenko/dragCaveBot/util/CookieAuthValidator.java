@@ -23,6 +23,7 @@ public class CookieAuthValidator implements Validator {
 
     @Override
     public void validate(Object o, Errors errors) {
+
         CookieAuth cookies = (CookieAuth) o;
 
         HttpHeaders headers = new HttpHeaders();

@@ -32,9 +32,5 @@ public class MainController {
         return "main";
     }
 
-    @GetMapping("/admin")
-    public String adminPage() {
-        adminService.doAdminStuff();
-        return "admin";
-    }
+
 }

@@ -11,10 +11,22 @@
     <!-- Выводим список всех драконов -->
     <li th:each="dragon : ${allDragons}">
         <span th:text="${dragon.name}"></span>
-        <span th:if="${dragonsForPerson.contains(dragon)}">(Owned)</span>
-        <form th:action="@{/dragons/add/{dragonId}(dragonId=${dragon.id})}" method="post">
-            <button type="submit">Add to My Dragons</button>
-        </form>
+
+        <!-- Проверяем, принадлежит ли дракон пользователю -->
+        <span th:if="${dragonsForPerson.contains(dragon)}">
+            (Owned)
+            <!-- Добавляем кнопку удаления дракона -->
+            <form th:action="@{/dragons/remove/{dragonId}(dragonId=${dragon.id})}" method="post">
+                <button type="submit">Remove from My Dragons</button>
+            </form>
+        </span>
+
+        <!-- Добавляем кнопку добавления дракона -->
+        <span th:unless="${dragonsForPerson.contains(dragon)}">
+            <form th:action="@{/dragons/add/{dragonId}(dragonId=${dragon.id})}" method="post">
+                <button type="submit">Add to My Dragons</button>
+            </form>
+        </span>
     </li>
 </ul>
 

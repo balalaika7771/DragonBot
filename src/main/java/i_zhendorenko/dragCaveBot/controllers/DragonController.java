@@ -6,6 +6,7 @@ import i_zhendorenko.dragCaveBot.models.Person;
 import i_zhendorenko.dragCaveBot.security.PersonDetails;
 import i_zhendorenko.dragCaveBot.services.DragonService;
 import i_zhendorenko.dragCaveBot.services.PersonService;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -42,10 +44,12 @@ public class DragonController {
         List<Dragon> allDragons = dragonService.getAllDragons();
 
         // Получаем список драконов у текущего пользователя
-        List<Dragon> dragonsForPerson = person.getDragons();
+        List<Dragon> dragonsForPerson = personService.getDragonsForPerson(person.getId());
+
+        model.addAttribute("dragonsForPerson", dragonsForPerson);
 
         model.addAttribute("allDragons", allDragons);
-        model.addAttribute("dragonsForPerson", dragonsForPerson);
+
 
         return "dragon/dragons";
     }
@@ -63,6 +67,20 @@ public class DragonController {
         }
         // Добавляем дракона текущему пользователю
         personService.addDragonToPerson(person.getId(), dragon.get());
+
+        return "redirect:/dragons";
+    }
+    @PostMapping("/dragons/remove/{dragonId}")
+    public String deleteDragonToPerson(@PathVariable int dragonId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Object principal = authentication.getPrincipal();
+        Person person = ((PersonDetails) principal).getPerson();
+
+        Optional<Dragon> dragon = dragonService.getDragonById(dragonId);
+        if(dragon.isEmpty()){
+            return "redirect:/dragons";
+        }
+        personService.deleteDragonToPerson(person.getId(), dragon.get());
 
         return "redirect:/dragons";
     }

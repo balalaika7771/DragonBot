@@ -15,5 +15,7 @@ import java.util.Optional;
 public interface DragonRepository extends JpaRepository<Dragon, Integer> {
 
     Optional<List<Dragon>> findByDescription(String description);
+    Optional<List<Dragon>> findByName(String name);
+
 
 }

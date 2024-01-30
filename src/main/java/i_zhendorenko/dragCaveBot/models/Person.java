@@ -3,6 +3,7 @@ package i_zhendorenko.dragCaveBot.models;
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -31,17 +32,20 @@ public class Person {
     @OneToMany(mappedBy = "person")
     private List<CookieAuth> cookieAuths;
 
-    @ManyToMany
+    @ManyToMany()
     @JoinTable(
+
             name = "person_dragon",
             joinColumns = @JoinColumn(name = "person_id"),
             inverseJoinColumns = @JoinColumn(name = "dragon_id"))
     private List<Dragon> dragons;
 
     public Person() {
+        dragons = new ArrayList<Dragon>();
     }
 
     public Person(String username, String password) {
+        dragons = new ArrayList<Dragon>();
         this.username = username;
         this.password = password;
     }
