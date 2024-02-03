@@ -9,14 +9,12 @@ import i_zhendorenko.dragCaveBot.models.Dragon;
 import i_zhendorenko.dragCaveBot.models.Person;
 import i_zhendorenko.dragCaveBot.services.*;
 import i_zhendorenko.dragCaveBot.util.ResponseEjector;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,6 +36,12 @@ public class ScheduledDragonCatcher {
         this.dragonService = dragonService;
     }
 
+
+    @Scheduled(cron = "0 0/5 * * * ?")
+    @Transactional(readOnly = true)
+    public void InFiveMinutes(){
+        Catch();
+    }
     @Scheduled(fixedDelay = 10000)
     @Transactional(readOnly = true)
     public void Catch() {
@@ -71,10 +75,11 @@ public class ScheduledDragonCatcher {
                     if(coolCodes
                             .stream()
                             .anyMatch(coolcode->code.getSampleCode().contains(coolcode.getCode()))){
-                        System.out.println("Пойман - " + code);
+                        System.out.println("Catch - " + code);
                         HttpClientService.sendGetRequest(code.getUrl(),cookies);
                     }
                 }
+
                 //Сбор интересных видов дракончиков
                 List<DragonPOJO> dragonList = responseEjector.ejectDragon(Response.getBody());
               //  System.out.println(dragonList);
@@ -82,7 +87,7 @@ public class ScheduledDragonCatcher {
                     if(dragonsForPerson
                             .stream()
                             .anyMatch(pDragom -> pDragom.getName().equals(dragon.getName()))){
-                        System.out.println("Пойман - " + dragon);
+                        System.out.println("Catch - " + dragon);
                         HttpClientService.sendGetRequest(dragon.getUrl(),cookies);
                     }
                 }
