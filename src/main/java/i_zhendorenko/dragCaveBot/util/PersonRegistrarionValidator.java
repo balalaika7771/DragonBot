@@ -38,7 +38,7 @@ public class PersonRegistrarionValidator implements Validator {
         if(!person.isEmpty()){
             errors.rejectValue("password", "", "пользователь уже есть");
         }
-        List<String> cookies = dragonAuthService.auth(person.get().getUsername(),person.get().getPassword());
+        List<String> cookies = dragonAuthService.auth(_person.getUsername(),_person.getPassword());
         if (cookies == null) {
             errors.rejectValue("password", "", "Пароль не действителен!");
         }

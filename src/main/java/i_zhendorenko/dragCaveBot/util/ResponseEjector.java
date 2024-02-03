@@ -26,8 +26,11 @@ public class ResponseEjector {
     String all;
 
     private final DragonService dragonService;
-    public ResponseEjector(DragonService dragonService) {
+
+    private final StringSimpler stringSimpler;
+    public ResponseEjector(DragonService dragonService, StringSimpler stringSimpler) {
         this.dragonService = dragonService;
+        this.stringSimpler = stringSimpler;
     }
     public List<Code> ejectCode(String Response){
         List<Code> res = new LinkedList<Code>();
@@ -54,7 +57,6 @@ public class ResponseEjector {
     public List<DragonPOJO> ejectDragon(String html) throws RuntimeException {
         List<DragonPOJO> res = new LinkedList<DragonPOJO>();
 
-
         Pattern pattern = Pattern.compile("href=\"/get/(.{5})\"");
         Matcher matcher = pattern.matcher(html);
 
@@ -78,17 +80,24 @@ public class ResponseEjector {
         }
         int i = 0;
         for (Element span : spans) {
-            String description = span.text();
+            String description = stringSimpler.simple(span.text());
             Optional<List<Dragon>> dragons = dragonService.findByDescription(description);
 
             int finalI = i++;
-            res.addAll(dragons.get()
+            List<DragonPOJO> newDragon = dragons.get()
                     .stream()
                     .filter(dragon -> dragon.getHabitat()
                             .stream()
                             .anyMatch(cave.get()::contains))
                     .map(dragon -> new DragonPOJO(urls.get(finalI),dragon.getName()))
-                    .collect(Collectors.toList()));
+                    .collect(Collectors.toList());
+            if(newDragon.isEmpty()){
+                System.out.println("ALERT ZERO:"+dragons.get() + description);
+            }
+            if(newDragon.size()>1){
+                System.out.println("ALERT MORE THAN ONE:"+dragons.get() + description);
+            }
+            res.addAll(newDragon);
         }
         System.out.println(res);
         return  res;
@@ -110,7 +119,8 @@ public class ResponseEjector {
 
                 String description = columns.get(1).text();
                 description = description.replaceAll("\\[\\d+\\]", "");
-                dragon.setDescription(description);
+
+                dragon.setDescription(stringSimpler.simple(description));
 
                 Elements habitatLinks = columns.get(3).select("a");
                 List<String> habitatList = new ArrayList<String>();
