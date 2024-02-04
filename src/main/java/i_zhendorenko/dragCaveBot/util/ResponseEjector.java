@@ -9,7 +9,8 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -26,7 +27,7 @@ public class ResponseEjector {
     String all;
 
     private final DragonService dragonService;
-
+    private static final Logger logger = LoggerFactory.getLogger(ResponseEjector.class);
     private final StringSimpler stringSimpler;
     public ResponseEjector(DragonService dragonService, StringSimpler stringSimpler) {
         this.dragonService = dragonService;
@@ -92,10 +93,13 @@ public class ResponseEjector {
                     .map(dragon -> new DragonPOJO(urls.get(finalI),dragon.getName()))
                     .collect(Collectors.toList());
             if(newDragon.isEmpty()){
-                System.out.println("ALERT ZERO:"+dragons.get() + description);
+                System.out.println("ALERT ZERO:"+ dragons.get() + description);
+
                 newDragon = dragons.get().stream().map(dragon -> new DragonPOJO(urls.get(finalI),dragon.getName())).collect(Collectors.toList());
+                logger.warn("ALERT ZERO: " + dragons.get() + description+ " anyway: "+ newDragon);
             }
             if(newDragon.size()>1){
+                //  logger.warn("ALERT MORE THAN ONE:"+dragons.get() + description);
                 System.out.println("ALERT MORE THAN ONE:"+dragons.get() + description);
             }
             res.addAll(newDragon);

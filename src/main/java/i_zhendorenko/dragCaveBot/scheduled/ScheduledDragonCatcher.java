@@ -1,5 +1,6 @@
 package i_zhendorenko.dragCaveBot.scheduled;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import i_zhendorenko.dragCaveBot.POJO.Code;
 import i_zhendorenko.dragCaveBot.POJO.DragonPOJO;
@@ -26,6 +27,7 @@ public class ScheduledDragonCatcher {
     private final PersonService personService;
     private final CoolCodeService coolCodeService;
     private final ResponseEjector responseEjector;
+    private static final Logger logger = LoggerFactory.getLogger(ScheduledDragonCatcher.class);
 
     private  final  DragonService dragonService;
     public ScheduledDragonCatcher(CookieAuthService cookieAuthService, PersonService personService, HttpClientService httpClientService, DragonAuthService dragonAuthService, CoolCodeService coolCodeService, ResponseEjector responseEjector, DragonService dragonService) {
@@ -76,6 +78,7 @@ public class ScheduledDragonCatcher {
                             .stream()
                             .anyMatch(coolcode->code.getSampleCode().contains(coolcode.getCode()))){
                         System.out.println("Catch - " + code);
+                        logger.info("Catch by code - " + code);
                         HttpClientService.sendGetRequest(code.getUrl(),cookies);
                     }
                 }
@@ -88,6 +91,7 @@ public class ScheduledDragonCatcher {
                             .stream()
                             .anyMatch(pDragom -> pDragom.getName().equals(dragon.getName()))){
                         System.out.println("Catch - " + dragon);
+                        logger.info("Catch by dragon - " + dragon);
                         HttpClientService.sendGetRequest(dragon.getUrl(),cookies);
                     }
                 }

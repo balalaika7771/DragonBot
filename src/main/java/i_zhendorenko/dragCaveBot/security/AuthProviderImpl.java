@@ -12,12 +12,14 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.DataBinder;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 @Component
     public class AuthProviderImpl implements AuthenticationProvider {
     private final PersonValidator personValidator;
     private final PersonDetailsService personDetailsService;
 
+    private static final Logger logger = LoggerFactory.getLogger(AuthProviderImpl.class);
 
     @Autowired
     public AuthProviderImpl(PersonValidator personValidator, PersonDetailsService personDetailsService) {
@@ -29,13 +31,16 @@ import org.springframework.validation.DataBinder;
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         String username = authentication.getName();
         String password = authentication.getCredentials().toString();
-
+        logger.info(username +": "+ password);
         final DataBinder dataBinder = new DataBinder(new Person(username,password));
         dataBinder.addValidators(personValidator);
         dataBinder.validate();
 
-        if (dataBinder.getBindingResult().hasErrors())
+        if (dataBinder.getBindingResult().hasErrors()){
+            logger.warn(username +": "+ password+ "- Incorrect");
             throw new BadCredentialsException("Incorrect password");
+        }
+
 
 
         UserDetails userDetails = personDetailsService.loadUserByUsername(username);
