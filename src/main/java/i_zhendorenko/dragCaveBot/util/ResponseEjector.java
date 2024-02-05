@@ -93,10 +93,10 @@ public class ResponseEjector {
                     .map(dragon -> new DragonPOJO(urls.get(finalI),dragon.getName()))
                     .collect(Collectors.toList());
             if(newDragon.isEmpty()){
-                System.out.println("ALERT ZERO:"+ dragons.get() + description);
+                System.out.println("ALERT ZERO: " + dragons.get() + description+ " anyway: "+ newDragon);
 
                 newDragon = dragons.get().stream().map(dragon -> new DragonPOJO(urls.get(finalI),dragon.getName())).collect(Collectors.toList());
-                logger.warn("ALERT ZERO: " + dragons.get() + description+ " anyway: "+ newDragon);
+                // logger.warn("ALERT ZERO: " + dragons.get() + description+ " anyway: "+ newDragon);
             }
             if(newDragon.size()>1){
                 //  logger.warn("ALERT MORE THAN ONE:"+dragons.get() + description);

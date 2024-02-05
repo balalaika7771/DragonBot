@@ -41,8 +41,6 @@ public class ScheduledDragonCatcher {
         this.responseEjector = responseEjector;
         this.dragonService = dragonService;
     }
-
-
     @Scheduled(cron = "0 0/5 * * * ?")
     @Transactional(readOnly = true)
     public void InFiveMinutes(){
@@ -67,36 +65,50 @@ public class ScheduledDragonCatcher {
             List<Dragon> dragonsForPerson = personService.getDragonsForPerson(person.getId());
             //List<Dragon> dragonsForPerson = personService.findDragonsById(person.getId());
 
-            //проходимся по сайтам
+            //проходимся по сайтам c яйцами
             for(String url : urlList){
                 //получаем ответ от запроса
                 ResponseEntity<String> Response = HttpClientService.sendGetRequest(url,cookies);
 
                 //секция для сбора драконов с крутыми именами
-                List<Code> codeList = responseEjector.ejectCode(Response.getBody());
-                System.out.println(codeList);
-                for (Code code: codeList){
-                    if(coolCodes
-                            .stream()
-                            .anyMatch(coolcode->code.getSampleCode().contains(coolcode.getCode()))){
-                        System.out.println("Catch - " + code + " for " + person.getUsername());
-                        logger.info("Catch by code - " + code + " for " + person.getUsername());
-                        HttpClientService.sendGetRequest(code.getUrl(),cookies);
-                    }
-                }
+                catchCoolCode(person, Response, coolCodes, cookies);
 
                 //Сбор интересных видов дракончиков
-                List<DragonPOJO> dragonList = responseEjector.ejectDragon(Response.getBody());
-              //  System.out.println(dragonList);
-                for (DragonPOJO dragon : dragonList) {
-                    if(dragonsForPerson
-                            .stream()
-                            .anyMatch(pDragom -> pDragom.getName().equals(dragon.getName()))){
-                        System.out.println("Catch - " + dragon + " for " + person.getUsername());
-                        logger.info("Catch by dragon - " + dragon + " for " + person.getUsername());
-                        HttpClientService.sendGetRequest(dragon.getUrl(),cookies);
-                    }
-                }
+                catchDragon(person, Response, dragonsForPerson, cookies);
+            }
+        }
+    }
+
+    private void catchDragon(Person person, ResponseEntity<String> Response, List<Dragon> dragonsForPerson, List<String> cookies) {
+        if(dragonsForPerson.isEmpty()){
+            return;
+        }
+        List<DragonPOJO> dragonList = responseEjector.ejectDragon(Response.getBody());
+        //  System.out.println(dragonList);
+        for (DragonPOJO dragon : dragonList) {
+            if(dragonsForPerson
+                    .stream()
+                    .anyMatch(pDragom -> pDragom.getName().equals(dragon.getName()))){
+                System.out.println("Catch - " + dragon + " for " + person.getUsername());
+                logger.info("Catch by dragon - " + dragon + " for " + person.getUsername());
+                HttpClientService.sendGetRequest(dragon.getUrl(), cookies);
+            }
+        }
+    }
+
+    private void catchCoolCode(Person person, ResponseEntity<String> Response, List<CoolCode> coolCodes, List<String> cookies) {
+        if(coolCodes.isEmpty()){
+            return;
+        }
+        List<Code> codeList = responseEjector.ejectCode(Response.getBody());
+        System.out.println(codeList);
+        for (Code code: codeList){
+            if(coolCodes
+                    .stream()
+                    .anyMatch(coolcode->code.getSampleCode().contains(coolcode.getCode()))){
+                System.out.println("Catch - " + code + " for " + person.getUsername());
+                logger.info("Catch by code - " + code + " for " + person.getUsername());
+                HttpClientService.sendGetRequest(code.getUrl(), cookies);
             }
         }
     }
