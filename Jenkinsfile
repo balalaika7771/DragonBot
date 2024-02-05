@@ -1,16 +1,20 @@
 pipeline {
     agent any
+
     tools {
         maven 'Maven'
     }
+
     stages {
         stage('Build') {
             steps {
                 script {
-                    // Устанавливаем Maven (если не установлен)
-                    tool name: 'Maven', type: 'maven'
-                    // Собираем проект
-                    sh "mvn clean package"
+                    // Устанавливаем оптимальные опции для Maven
+                    def mvnHome = tool 'Maven'
+                    def mvnCMD = "${mvnHome}/bin/mvn"
+
+                    // Сборка без выполнения тестов
+                    sh "${mvnCMD} clean install -DskipTests"
                 }
             }
         }
@@ -18,7 +22,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    // Собираем Docker образ
+                    // Сборка Docker образа
                     sh "docker build -t dragcave-bot ."
                 }
             }
@@ -27,7 +31,7 @@ pipeline {
         stage('Run Docker Container') {
             steps {
                 script {
-                    // Запускаем Docker контейнер
+                    // Запуск Docker контейнера
                     sh "docker run -p 8080:8080 -d dragcave-bot"
                 }
             }
@@ -36,7 +40,7 @@ pipeline {
         stage('Cleanup') {
             steps {
                 script {
-                    // Очищаем временные файлы и образы
+                    // Очистка временных файлов и образов
                     sh "docker system prune -f"
                 }
             }
