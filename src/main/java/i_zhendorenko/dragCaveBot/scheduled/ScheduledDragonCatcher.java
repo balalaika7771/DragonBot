@@ -92,7 +92,7 @@ public class ScheduledDragonCatcher {
                     if(dragonsForPerson
                             .stream()
                             .anyMatch(pDragom -> pDragom.getName().equals(dragon.getName()))){
-                        System.out.println("Catch - " + dragon + " for " + person.getUsername());
+                        System.out.println("Catch- " + dragon + " for " + person.getUsername());
                         logger.info("Catch by dragon - " + dragon + " for " + person.getUsername());
                         HttpClientService.sendGetRequest(dragon.getUrl(),cookies);
                     }
