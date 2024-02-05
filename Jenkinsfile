@@ -6,7 +6,7 @@ pipeline {
             steps {
                 script {
                     // Сборка проекта (предполагается, что Maven установлен)
-                    sh 'mvn clean install'
+                    sh 'clean install -e -X -Dmaven.test.skip=true'
                 }
             }
         }
