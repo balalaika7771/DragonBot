@@ -1,7 +1,9 @@
-FROM adoptopenjdk:21-jre-hotspot
+FROM openjdk:21-jre-slim
 
 WORKDIR /app
 
-COPY target/DragCaveBot-0.0.1-SNAPSHOT.jar /app/DragCaveBot.jar
+COPY target/your-application.jar /app/your-application.jar
 
-CMD ["java", "-jar", "DragCaveBot.jar"]
+EXPOSE 8080
+
+CMD ["java", "-jar", "your-application.jar"]
