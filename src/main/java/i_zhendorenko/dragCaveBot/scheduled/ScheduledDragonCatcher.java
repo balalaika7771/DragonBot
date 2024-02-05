@@ -9,6 +9,7 @@ import i_zhendorenko.dragCaveBot.models.CoolCode;
 import i_zhendorenko.dragCaveBot.models.Dragon;
 import i_zhendorenko.dragCaveBot.models.Person;
 import i_zhendorenko.dragCaveBot.services.*;
+import i_zhendorenko.dragCaveBot.util.CookieAuthValidator;
 import i_zhendorenko.dragCaveBot.util.ResponseEjector;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -24,15 +25,18 @@ public class ScheduledDragonCatcher {
     @Value("#{'${dragonCave.url.caves}'.split(',')}")
     private List<String> urlList;
     private final CookieAuthService cookieAuthService;
+
+    private final CookieAuthValidator cookieAuthValidator;
     private final PersonService personService;
     private final CoolCodeService coolCodeService;
     private final ResponseEjector responseEjector;
     private static final Logger logger = LoggerFactory.getLogger(ScheduledDragonCatcher.class);
 
     private  final  DragonService dragonService;
-    public ScheduledDragonCatcher(CookieAuthService cookieAuthService, PersonService personService, HttpClientService httpClientService, DragonAuthService dragonAuthService, CoolCodeService coolCodeService, ResponseEjector responseEjector, DragonService dragonService) {
+    public ScheduledDragonCatcher(CookieAuthService cookieAuthService, PersonService personService, HttpClientService httpClientService, DragonAuthService dragonAuthService, CookieAuthValidator cookieAuthValidator, CoolCodeService coolCodeService, ResponseEjector responseEjector, DragonService dragonService) {
         this.cookieAuthService = cookieAuthService;
         this.personService = personService;
+        this.cookieAuthValidator = cookieAuthValidator;
         this.coolCodeService = coolCodeService;
         this.responseEjector = responseEjector;
         this.dragonService = dragonService;
@@ -56,8 +60,6 @@ public class ScheduledDragonCatcher {
             }
             List<String> cookies = lastCookieAuth.get().getCookies();
 
-            //TODO обновление куки если они протухли или были отключены
-
             //получение шаблонов для кодов
             List<CoolCode> coolCodes = coolCodeService.getAllCodesByPerson(person);
 
@@ -77,8 +79,8 @@ public class ScheduledDragonCatcher {
                     if(coolCodes
                             .stream()
                             .anyMatch(coolcode->code.getSampleCode().contains(coolcode.getCode()))){
-                        System.out.println("Catch - " + code);
-                        logger.info("Catch by code - " + code);
+                        System.out.println("Catch - " + code + " for " + person.getUsername());
+                        logger.info("Catch by code - " + code + " for " + person.getUsername());
                         HttpClientService.sendGetRequest(code.getUrl(),cookies);
                     }
                 }
@@ -90,8 +92,8 @@ public class ScheduledDragonCatcher {
                     if(dragonsForPerson
                             .stream()
                             .anyMatch(pDragom -> pDragom.getName().equals(dragon.getName()))){
-                        System.out.println("Catch - " + dragon);
-                        logger.info("Catch by dragon - " + dragon);
+                        System.out.println("Catch - " + dragon + " for " + person.getUsername());
+                        logger.info("Catch by dragon - " + dragon + " for " + person.getUsername());
                         HttpClientService.sendGetRequest(dragon.getUrl(),cookies);
                     }
                 }

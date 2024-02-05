@@ -134,7 +134,7 @@ public class ResponseEjector {
                     if(caves.contains(habitatLink.text())){
                         habitatList.add(habitatLink.text());
                     }
-                    if(habitatLink.text().equals(all)){
+                    if(habitatLink.text().contains(all)){
                         habitatList.addAll(caves);
                     }
                 }
