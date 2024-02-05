@@ -1,30 +1,34 @@
 pipeline {
     agent any
 
+    environment {
+        DOCKER_IMAGE = 'dragcavebot:latest'
+    }
+
     stages {
         stage('Build') {
             steps {
                 script {
-                    // Сборка проекта (предполагается, что Maven установлен)
-                    sh 'mvn clean install'
+                    // Clean and build the project
+                    sh './mvnw clean package'
                 }
             }
         }
 
-        stage('Build Docker Image') {
+        stage('Dockerize') {
             steps {
                 script {
-                    // Собираем Docker-образ
-                    sh 'docker build -t dragcavebot:latest .'
+                    // Build Docker image
+                    sh "docker build -t ${DOCKER_IMAGE} ."
                 }
             }
         }
 
-        stage('Run Docker Container') {
+        stage('Deploy') {
             steps {
                 script {
-                    // Запускаем Docker-контейнер
-                    sh 'docker run -d --name dragcavebot -p 8080:8080 dragcavebot:latest'
+                    // Run the Docker container
+                    sh "docker run -p 8080:8080 -d ${DOCKER_IMAGE}"
                 }
             }
         }
@@ -32,10 +36,9 @@ pipeline {
 
     post {
         always {
-            // Очистка ресурсов (например, остановка и удаление контейнера)
+            // Clean up Docker containers after the build
             script {
-                sh 'docker stop dragcavebot || true'
-                sh 'docker rm dragcavebot || true'
+                sh 'docker ps -a -q | xargs docker rm -f'
             }
         }
     }
