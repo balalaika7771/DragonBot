@@ -45,10 +45,10 @@ public class Code {
     public String getSampleCode() {
         String res = new String(code);
         res = res.toLowerCase();
-        res = res.replaceAll("9","g");
-        res = res.replaceAll("0","o");
-        res = res.replaceAll("6","b");
-        res = res.replaceAll("1","i");
+//        res = res.replaceAll("9","g");
+//        res = res.replaceAll("0","o");
+//        res = res.replaceAll("6","b");
+//        res = res.replaceAll("1","i");
         return res;
     }
 }
