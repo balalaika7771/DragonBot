@@ -32,8 +32,8 @@ pipeline {
             steps {
                 script {
                     // Запуск Docker контейнера
-
-                    sh "docker run -p 8080:8080 -d dragcave-bot"
+                    sh "docker rm dragcave"
+                    sh "docker run --name dragcave -p 8080:8080 -d dragcave-bot"
                 }
             }
         }
