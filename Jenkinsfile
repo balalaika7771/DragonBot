@@ -31,9 +31,12 @@ pipeline {
         stage('Run Docker Container') {
             steps {
                 script {
-
-                    // Запуск Docker контейнера
-                    //sh "docker rm dragcave"
+                    def containerExists = sh(script: 'docker inspect -f {{.State.Running}} dragcave', returnStatus: true) == 0
+                    if (containerExists) {
+                        echo "Контейнер с именем 'dragcave' уже существует. Остановим его и запустим новый."
+                        sh "docker stop dragcave"
+                        sh "docker rm dragcave"
+                    }
                     sh "docker run --name dragcave --memory 500m -p 8080:8080 -d dragcave-bot"
                 }
             }

@@ -1,4 +1,5 @@
 package i_zhendorenko.dragCaveBot.scheduled;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,6 +23,8 @@ import java.util.Optional;
 
 @Component
 public class ScheduledDragonCatcher {
+    @Value("${dragonCave.catchFlag}")
+    static String catchFlag;
     @Value("#{'${dragonCave.url.caves}'.split(',')}")
     private List<String> urlList;
     private final CookieAuthService cookieAuthService;
@@ -91,9 +94,16 @@ public class ScheduledDragonCatcher {
                     .anyMatch(pDragom -> pDragom.getName().equals(dragon.getName()))){
                 System.out.println("Catch - " + dragon + " for " + person.getUsername());
                 logger.info("Catch by dragon - " + dragon + " for " + person.getUsername());
-                HttpClientService.sendGetRequest(dragon.getUrl(), cookies);
+                catchThis(cookies, dragon.getUrl());
+
             }
         }
+    }
+
+    @NotNull
+    private static boolean catchThis(List<String> cookies, String url) {
+        ResponseEntity<String> response = HttpClientService.sendGetRequest(url, cookies);
+        return response.getBody().contains(catchFlag);
     }
 
     private void catchCoolCode(Person person, ResponseEntity<String> Response, List<CoolCode> coolCodes, List<String> cookies) {
@@ -108,9 +118,11 @@ public class ScheduledDragonCatcher {
                     .anyMatch(coolcode->code.getSampleCode().contains(coolcode.getCode()))){
                 System.out.println("Catch - " + code + " for " + person.getUsername());
                 logger.info("Catch by code - " + code + " for " + person.getUsername());
-                HttpClientService.sendGetRequest(code.getUrl(), cookies);
+                 catchThis(cookies, code.getUrl());
             }
         }
     }
+
+
 
 }
