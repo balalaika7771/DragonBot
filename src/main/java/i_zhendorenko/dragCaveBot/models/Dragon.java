@@ -33,6 +33,9 @@ public class Dragon {
     @ManyToMany(mappedBy = "dragons")
     private List<Person> persons;
 
+    @OneToMany(mappedBy = "dragon")
+    private List<LogRecord> logRecords;
+
     public Dragon() {
         habitat = new ArrayList<String>();
     }

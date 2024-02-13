@@ -6,12 +6,13 @@ import java.util.Objects;
 
 public class DragonPOJO {
     String url;
-    String name;
 
+
+    Dragon dragon;
 
     @Override
     public String toString() {
-        return name;
+        return dragon.getName();
     }
 
     @Override
@@ -19,21 +20,23 @@ public class DragonPOJO {
         if (this == o) return true;
         if (!(o instanceof DragonPOJO)) return false;
         DragonPOJO that = (DragonPOJO) o;
-        return Objects.equals(getUrl(), that.getUrl()) && Objects.equals(getName(), that.getName());
+        return Objects.equals(getUrl(), that.getUrl()) && Objects.equals(getDragon(), that.getDragon());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getUrl(), getName());
+        return Objects.hash(getUrl(), getDragon());
     }
 
     public DragonPOJO() {
     }
 
-    public DragonPOJO(String url, String name) {
+    public DragonPOJO(String url, Dragon dragon) {
         this.url = url;
-        this.name = name;
+        this.dragon = dragon;
     }
+
+
 
     public String getUrl() {
         return url;
@@ -43,13 +46,12 @@ public class DragonPOJO {
         this.url = url;
     }
 
-    public String getName() {
-        return name;
+
+    public Dragon getDragon() {
+        return dragon;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setDragon(Dragon dragon) {
+        this.dragon = dragon;
     }
-
-
 }

@@ -90,12 +90,14 @@ public class ResponseEjector {
                     .filter(dragon -> dragon.getHabitat()
                             .stream()
                             .anyMatch(cave.get()::contains))
-                    .map(dragon -> new DragonPOJO(urls.get(finalI),dragon.getName()))
+                    .map(dragon -> new DragonPOJO(urls.get(finalI),dragon))
                     .collect(Collectors.toList());
+
             if(newDragon.isEmpty()){
+
+                newDragon = dragons.get().stream().map(dragon -> new DragonPOJO(urls.get(finalI),dragon)).collect(Collectors.toList());
                 System.out.println("ALERT ZERO: " + dragons.get() + description+ " anyway: "+ newDragon);
 
-                newDragon = dragons.get().stream().map(dragon -> new DragonPOJO(urls.get(finalI),dragon.getName())).collect(Collectors.toList());
                 // logger.warn("ALERT ZERO: " + dragons.get() + description+ " anyway: "+ newDragon);
             }
             if(newDragon.size()>1){
@@ -104,7 +106,7 @@ public class ResponseEjector {
             }
             res.addAll(newDragon);
         }
-        System.out.println(res);
+
         return  res;
     }
 

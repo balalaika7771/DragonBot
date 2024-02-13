@@ -40,6 +40,9 @@ public class Person {
             inverseJoinColumns = @JoinColumn(name = "dragon_id"))
     private List<Dragon> dragons;
 
+    @OneToMany(mappedBy = "person")
+    private List<LogRecord> logRecords;
+
     public Person() {
         dragons = new ArrayList<Dragon>();
     }
