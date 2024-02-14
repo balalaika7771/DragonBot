@@ -33,11 +33,7 @@ public class AuthController {
         return "auth/login";
     }
 
-    @GetMapping("/registration")
-    public String registrationPage(@ModelAttribute("person") Person person) {
 
-        return "auth/registration";
-    }
     @PostMapping("/registration")
     public String performRegistration(@ModelAttribute("person") @Valid Person person,
                                       BindingResult bindingResult) {
@@ -49,5 +45,10 @@ public class AuthController {
         registrationService.register(person);
 
         return "redirect:/auth/login";
+    }
+
+    @GetMapping("/registration")
+    public String registrationPage(@ModelAttribute("person") Person person) {
+        return "auth/login";
     }
 }

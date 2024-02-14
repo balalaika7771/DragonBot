@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Login page</title>
+    <title>Login and Registration</title>
     <style>
         body {
             display: flex;
@@ -13,83 +13,68 @@
             background-color: #f1f1f1;
         }
 
-        form {
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
             background-color: #fff;
             border-radius: 10px;
             padding: 20px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             text-align: center;
+            transition: transform 0.3s ease;
         }
 
-        label {
-            display: block;
-            margin-bottom: 10px;
-        }
-
-        input[type="text"],
-        input[type="password"] {
-            width: 250px;
-            padding: 10px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-            margin-bottom: 20px;
-        }
-
-        input[type="submit"] {
-            width: 250px;
-            padding: 10px;
-            border-radius: 5px;
-            border: none;
-            background-color: #007bff;
-            color: #fff;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        input[type="submit"]:hover {
-            transform: scale(1.05);
-        }
-
-        .register-button {
-            width: auto;
-            padding: 10px 20px;
-            border-radius: 5px;
-            border: none;
-            background-color: #28a745;
-            color: #fff;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .register-button:hover {
-            transform: scale(1.05);
-        }
-
-        .error {
-            color: red;
-            margin-top: 10px;
+        .hidden {
+            display: none;
         }
     </style>
 </head>
 <body>
 
-<form name="f" method="post" action="/process_login">
-    <label for="username">Введите имя пользователя: </label>
-    <input type="text" name="username" id="username"/>
-    <br/>
-    <label for="password">Введите пароль: </label>
-    <input type="password" name="password" id="password"/>
-    <br/>
-    <input type="submit" value="Login"/>
-
-    <div th:if="${param.error}" class="error">
-        Неправильные имя или пароль
+<div class="container" id="loginForm">
+    <h2>Login</h2>
+    <form name="loginForm" method="post" action="/process_login">
+        <label for="username">Username: </label>
+        <input type="text" name="username" id="username"/>
+        <br/>
+        <label for="password">Password: </label>
+        <input type="password" name="password" id="password"/>
+        <br/>
+        <input type="submit" value="Login"/>
+    </form>
+    <div th:if="${param.error}" style="color: red">
+        Invalid username or password.
     </div>
-</form>
+    <p>Don't have an account? <a href="#" id="showRegistration">Register</a></p>
+</div>
 
-<form action="/auth/registration" method="get">
-    <button class="register-button" type="submit">registration</button>
-</form>
+<div class="container hidden" id="registrationForm">
+    <h2>Registration</h2>
+    <form name="registrationForm" method="post" action="/registration">
+        <label for="username">Username: </label>
+        <input type="text" name="username" id="username"/>
+        <br/>
+        <label for="password">Password: </label>
+        <input type="password" name="password" id="password"/>
+        <br/>
+        <input type="submit" value="Register"/>
+    </form>
+    <p>Already have an account? <a href="#" id="showLogin">Login</a></p>
+</div>
+
+<script>
+    document.getElementById('showRegistration').addEventListener('click', function () {
+        document.getElementById('loginForm').classList.add('hidden');
+        document.getElementById('registrationForm').classList.remove('hidden');
+    });
+
+    document.getElementById('showLogin').addEventListener('click', function () {
+        document.getElementById('registrationForm').classList.add('hidden');
+        document.getElementById('loginForm').classList.remove('hidden');
+    });
+</script>
 
 </body>
 </html>
