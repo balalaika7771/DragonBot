@@ -1,11 +1,13 @@
 package i_zhendorenko.dragCaveBot.controllers;
 
 
+import i_zhendorenko.dragCaveBot.DTO.DragonDTO;
 import i_zhendorenko.dragCaveBot.models.Dragon;
 import i_zhendorenko.dragCaveBot.models.Person;
 import i_zhendorenko.dragCaveBot.security.PersonDetails;
 import i_zhendorenko.dragCaveBot.services.DragonService;
 import i_zhendorenko.dragCaveBot.services.PersonService;
+import javassist.NotFoundException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 
@@ -21,6 +23,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Controller
 public class DragonController {
@@ -41,10 +44,12 @@ public class DragonController {
         Person person = ((PersonDetails) principal).getPerson();
 
         // Получаем список всех драконов
-        List<Dragon> allDragons = dragonService.getAllDragons();
+        List<DragonDTO> allDragons = dragonService.getAllDragons()
+                .stream().map(DragonDTO::new).collect(Collectors.toList());
 
         // Получаем список драконов у текущего пользователя
-        List<Dragon> dragonsForPerson = personService.getDragonsForPerson(person.getId());
+        List<DragonDTO> dragonsForPerson = personService.getDragonsForPerson(person.getId())
+                .stream().map(DragonDTO::new).collect(Collectors.toList());
 
         model.addAttribute("dragonsForPerson", dragonsForPerson);
 
@@ -54,30 +59,34 @@ public class DragonController {
         return "dragon/dragons";
     }
 
-    @PostMapping("/dragons/add/{dragonId}")
-    public String addDragonToPerson(@PathVariable int dragonId) {
+    @PostMapping("/dragons/add/{name}")
+    public String addDragonToPerson(@PathVariable String name) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Object principal = authentication.getPrincipal();
         Person person = ((PersonDetails) principal).getPerson();
 
         // Находим дракона по его идентификатору
-        Optional<Dragon> dragon = dragonService.getDragonById(dragonId);
-        if(dragon.isEmpty()){
+        Optional<Dragon> dragon = null;
+        try {
+            dragon = dragonService.findByName(name);
+        } catch (NotFoundException e) {
             return "redirect:/dragons";
         }
+
         // Добавляем дракона текущему пользователю
         personService.addDragonToPerson(person.getId(), dragon.get());
-
         return "redirect:/dragons";
     }
-    @PostMapping("/dragons/remove/{dragonId}")
-    public String deleteDragonToPerson(@PathVariable int dragonId) {
+    @PostMapping("/dragons/remove/{name}")
+    public String deleteDragonToPerson(@PathVariable String name) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Object principal = authentication.getPrincipal();
         Person person = ((PersonDetails) principal).getPerson();
 
-        Optional<Dragon> dragon = dragonService.getDragonById(dragonId);
-        if(dragon.isEmpty()){
+        Optional<Dragon> dragon = null;
+        try {
+            dragon = dragonService.findByName(name);
+        } catch (NotFoundException e) {
             return "redirect:/dragons";
         }
         personService.deleteDragonToPerson(person.getId(), dragon.get());

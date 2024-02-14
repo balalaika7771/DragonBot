@@ -29,8 +29,7 @@ public class CoolCodeDTO {
     public boolean equals(CoolCode coolCode){
         return coolCode.getCode().equals(mycode);
     }
-    @NotEmpty(message = "code не должно быть пустым")
-    @Column(name = "code")
+
     private String mycode;
 
     public String getCode() {

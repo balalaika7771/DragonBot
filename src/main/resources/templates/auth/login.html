@@ -3,6 +3,73 @@
 <head>
     <meta charset="UTF-8">
     <title>Login page</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f1f1f1;
+        }
+
+        form {
+            background-color: #fff;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            width: 250px;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            margin-bottom: 20px;
+        }
+
+        input[type="submit"] {
+            width: 250px;
+            padding: 10px;
+            border-radius: 5px;
+            border: none;
+            background-color: #007bff;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        input[type="submit"]:hover {
+            transform: scale(1.05);
+        }
+
+        .register-button {
+            width: auto;
+            padding: 10px 20px;
+            border-radius: 5px;
+            border: none;
+            background-color: #28a745;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .register-button:hover {
+            transform: scale(1.05);
+        }
+
+        .error {
+            color: red;
+            margin-top: 10px;
+        }
+    </style>
 </head>
 <body>
 
@@ -15,13 +82,13 @@
     <br/>
     <input type="submit" value="Login"/>
 
-    <div th:if="${param.error}" style="color: red">
+    <div th:if="${param.error}" class="error">
         Неправильные имя или пароль
     </div>
 </form>
 
 <form action="/auth/registration" method="get">
-    <button type="submit">registration</button>
+    <button class="register-button" type="submit">registration</button>
 </form>
 
 </body>

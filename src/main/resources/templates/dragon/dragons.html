@@ -16,14 +16,14 @@
         <span th:if="${dragonsForPerson.contains(dragon)}">
             (Owned)
             <!-- Добавляем кнопку удаления дракона -->
-            <form th:action="@{/dragons/remove/{dragonId}(dragonId=${dragon.id})}" method="post">
+            <form th:action="@{/dragons/remove/{name}(name=${dragon.name})}" method="post">
                 <button type="submit">Remove from My Dragons</button>
             </form>
         </span>
 
         <!-- Добавляем кнопку добавления дракона -->
         <span th:unless="${dragonsForPerson.contains(dragon)}">
-            <form th:action="@{/dragons/add/{dragonId}(dragonId=${dragon.id})}" method="post">
+            <form th:action="@{/dragons/add/{name}(name=${dragon.name})}" method="post">
                 <button type="submit">Add to My Dragons</button>
             </form>
         </span>
