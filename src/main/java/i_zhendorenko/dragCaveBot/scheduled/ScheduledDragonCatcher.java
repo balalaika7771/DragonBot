@@ -44,14 +44,14 @@ public class ScheduledDragonCatcher {
         this.logRecordService = logRecordService;
         this.dragonService = dragonService;
     }
-    //@Scheduled(cron = "0 0/5 * * * ?")
+    @Scheduled(cron = "0 0/5 * * * ?")
     @Transactional()
     public void InFiveMinutes(){
         catching();
     }
 
 
-    //@Scheduled(fixedDelay = 10000)
+    @Scheduled(fixedDelay = 10000)
     @Transactional()
     public void catching() {
 
