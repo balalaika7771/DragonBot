@@ -44,19 +44,19 @@ public class ScheduledDragonCatcher {
         this.logRecordService = logRecordService;
         this.dragonService = dragonService;
     }
-    @Scheduled(cron = "0 0/5 * * * ?")
+    //@Scheduled(cron = "0 0/5 * * * ?")
     @Transactional()
     public void InFiveMinutes(){
         catching();
     }
 
 
-    @Scheduled(fixedDelay = 10000)
+    //@Scheduled(fixedDelay = 10000)
     @Transactional()
     public void catching() {
 
         List<String> adminCookies = cookieAuthService.getLastCookieAuthByPerson(personService.findByUsername("pupukaka").get()).get().getCookies();
-
+        Iterable<Person> allPersons = personService.getAllPeople();
         for(String url : urlList){
             //получаем ответ от запроса
             ResponseEntity<String> Response = HttpClientService.sendGetRequest(url,adminCookies);
@@ -75,11 +75,8 @@ public class ScheduledDragonCatcher {
                                 });
                             }));
 
-
-
             List<Code> codeList = responseEjector.ejectCode(Response.getBody());
             System.out.println(codeList);
-            Iterable<Person> allPersons = personService.getAllPeople();
             for(Person person : allPersons) {
                 for (Code code : codeList) {
                     if (person.getCodes()

@@ -3,32 +3,98 @@
 <head>
     <meta charset="UTF-8">
     <title>Dragons</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        h2 {
+            text-align: center;
+            color: #007bff;
+            margin-bottom: 20px;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        li {
+            background-color: #fff;
+            padding: 10px;
+            border-bottom: 1px solid #ccc;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            transition: all 0.3s ease;
+        }
+
+        li:hover {
+            background-color: #f0f0f0;
+        }
+
+        button {
+            padding: 8px 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: #fff;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        form {
+            display: inline;
+        }
+
+        .owned {
+            color: green;
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
 
-<h2>All Dragons</h2>
-<ul>
-    <!-- Выводим список всех драконов -->
-    <li th:each="dragon : ${allDragons}">
-        <span th:text="${dragon.name}"></span>
+<div class="container">
+    <h2>All Dragons</h2>
+    <ul>
+        <!-- Выводим список всех драконов -->
+        <li th:each="dragon : ${allDragons}">
+            <span th:text="${dragon.name}"></span>
 
-        <!-- Проверяем, принадлежит ли дракон пользователю -->
-        <span th:if="${dragonsForPerson.contains(dragon)}">
-            (Owned)
-            <!-- Добавляем кнопку удаления дракона -->
-            <form th:action="@{/dragons/remove/{dragonId}(dragonId=${dragon.id})}" method="post">
-                <button type="submit">Remove from My Dragons</button>
-            </form>
-        </span>
+            <!-- Проверяем, принадлежит ли дракон пользователю -->
+            <span th:if="${dragonsForPerson.contains(dragon)}" class="owned">
+                (Owned)
+                <!-- Добавляем кнопку удаления дракона -->
+                <form th:action="@{/dragons/remove/{name}(name=${dragon.name})}" method="post">
+                    <button type="submit">Remove from My Dragons</button>
+                </form>
+            </span>
 
-        <!-- Добавляем кнопку добавления дракона -->
-        <span th:unless="${dragonsForPerson.contains(dragon)}">
-            <form th:action="@{/dragons/add/{dragonId}(dragonId=${dragon.id})}" method="post">
-                <button type="submit">Add to My Dragons</button>
-            </form>
-        </span>
-    </li>
-</ul>
+            <!-- Добавляем кнопку добавления дракона -->
+            <span th:unless="${dragonsForPerson.contains(dragon)}">
+                <form th:action="@{/dragons/add/{name}(name=${dragon.name})}" method="post">
+                    <button type="submit">Add to My Dragons</button>
+                </form>
+            </span>
+        </li>
+    </ul>
+</div>
 
 </body>
 </html>

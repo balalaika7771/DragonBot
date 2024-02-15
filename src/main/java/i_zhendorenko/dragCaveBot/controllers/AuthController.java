@@ -33,21 +33,18 @@ public class AuthController {
         return "auth/login";
     }
 
-    @GetMapping("/registration")
-    public String registrationPage(@ModelAttribute("person") Person person) {
 
-        return "auth/registration";
-    }
     @PostMapping("/registration")
     public String performRegistration(@ModelAttribute("person") @Valid Person person,
                                       BindingResult bindingResult) {
         personRegistrarionValidator.validate(person, bindingResult);
 
         if (bindingResult.hasErrors())
-            return "/auth/registration";
+            return "/auth/login";
 
         registrationService.register(person);
 
         return "redirect:/auth/login";
     }
+
 }
