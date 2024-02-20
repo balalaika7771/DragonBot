@@ -40,15 +40,11 @@ public class AuthController {
         personRegistrarionValidator.validate(person, bindingResult);
 
         if (bindingResult.hasErrors())
-            return "/auth/registration";
+            return "/auth/login";
 
         registrationService.register(person);
 
         return "redirect:/auth/login";
     }
 
-    @GetMapping("/registration")
-    public String registrationPage(@ModelAttribute("person") Person person) {
-        return "auth/login";
-    }
 }

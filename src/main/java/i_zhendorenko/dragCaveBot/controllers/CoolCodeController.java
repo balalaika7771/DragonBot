@@ -53,14 +53,14 @@ public class CoolCodeController {
     }
 
     @PostMapping("/coolCode/add")
-    public String addString(@NotNull @NotEmpty String newString) {
+    public String addString(@NotNull @NotEmpty String newCoolCode) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Object principal = authentication.getPrincipal();
         if (!(principal instanceof PersonDetails)) {
             //TODO ощибка
             return "code/code";
         }
-        String[] wordsArray = newString.split(" ");
+        String[] wordsArray = newCoolCode.split(" ");
 
         // Выводим результат
         for (String word : wordsArray) {
