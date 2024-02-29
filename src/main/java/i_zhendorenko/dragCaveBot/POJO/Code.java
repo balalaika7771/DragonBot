@@ -8,6 +8,10 @@ public class Code {
     public Code(){
     }
 
+    public Code(String code) {
+        this.code = code;
+    }
+
     public Code(String url, String code) {
         this.url = url;
         this.code = code;

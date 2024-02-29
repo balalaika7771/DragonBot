@@ -16,4 +16,5 @@ public interface PeopleRepository extends JpaRepository<Person, Integer> {
     List<Person> findByDragons(Dragon dragon);
     List<Person> findAll();
     List<Dragon> findDragonsById(int personId);
+    Optional<List<Person>> findByAbandonTrue();
 }
