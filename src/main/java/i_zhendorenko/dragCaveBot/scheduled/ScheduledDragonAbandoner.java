@@ -7,6 +7,8 @@ import i_zhendorenko.dragCaveBot.models.Person;
 import i_zhendorenko.dragCaveBot.services.CookieAuthService;
 import i_zhendorenko.dragCaveBot.services.PersonService;
 import i_zhendorenko.dragCaveBot.util.ResponseEjector;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -28,6 +30,7 @@ public class ScheduledDragonAbandoner {
     private final CookieAuthService cookieAuthService;
 
     private final PersonService personService;
+    private static final Logger logger = LoggerFactory.getLogger(ScheduledDragonAbandoner.class);
 
     private final ResponseEjector responseEjector;
     public ScheduledDragonAbandoner(CookieAuthService cookieAuthService, PersonService personService, ResponseEjector responseEjector) {
@@ -70,8 +73,9 @@ public class ScheduledDragonAbandoner {
                 String url = "https://dragcave.net/actions/" + egg + "/abandon";
                 // Отправка POST-запроса
                 ResponseEntity<String> response = restTemplate.postForEntity(url, request, String.class);
-                System.out.println("Response code: " + response.getStatusCode());
-                System.out.println("Response body: " + response.getBody());
+                System.out.println("Response abandon action: " + response.getStatusCode());
+                logger.info("abandon - " + egg + " for " + person.getUsername());
+
             }
         }
     }
