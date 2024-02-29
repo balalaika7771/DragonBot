@@ -1,6 +1,5 @@
 package i_zhendorenko.dragCaveBot.scheduled;
 import i_zhendorenko.dragCaveBot.models.*;
-import javassist.NotFoundException;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 @Component
 public class ScheduledDragonCatcher {
@@ -28,30 +26,31 @@ public class ScheduledDragonCatcher {
     private List<String> urlList;
     private final CookieAuthService cookieAuthService;
 
-    private final CookieAuthValidator cookieAuthValidator;
     private final PersonService personService;
     private final CoolCodeService coolCodeService;
     private final ResponseEjector responseEjector;
     private static final Logger logger = LoggerFactory.getLogger(ScheduledDragonCatcher.class);
-    private final LogRecordService logRecordService;
-    private  final  DragonService dragonService;
-    public ScheduledDragonCatcher(CookieAuthService cookieAuthService, PersonService personService, HttpClientService httpClientService, DragonAuthService dragonAuthService, CookieAuthValidator cookieAuthValidator, CoolCodeService coolCodeService, ResponseEjector responseEjector, LogRecordService logRecordService, DragonService dragonService) {
+    private final LogDragonRecordService logDragonRecordService;
+
+    private  final LogCodeRecordService logCodeRecordService;
+
+    public ScheduledDragonCatcher(CookieAuthService cookieAuthService, PersonService personService, CoolCodeService coolCodeService, ResponseEjector responseEjector, LogDragonRecordService logDragonRecordService, LogCodeRecordService logCodeRecordService) {
         this.cookieAuthService = cookieAuthService;
         this.personService = personService;
-        this.cookieAuthValidator = cookieAuthValidator;
         this.coolCodeService = coolCodeService;
         this.responseEjector = responseEjector;
-        this.logRecordService = logRecordService;
-        this.dragonService = dragonService;
+        this.logDragonRecordService = logDragonRecordService;
+        this.logCodeRecordService = logCodeRecordService;
+
     }
-    //@Scheduled(cron = "0 0/5 * * * ?")
+    @Scheduled(cron = "0 0/5 * * * ?")
     @Transactional()
     public void InFiveMinutes(){
         catching();
     }
 
 
-    //@Scheduled(fixedDelay = 10000)
+    @Scheduled(fixedDelay = 10000)
     @Transactional()
     public void catching() {
 
@@ -70,7 +69,7 @@ public class ScheduledDragonCatcher {
                                     if(catchThis(cookieAuth.getCookies(), dragonPOJO.getUrl())){
                                         System.out.println("Catch - " + dragonPOJO + " for " + person.getUsername());
                                         logger.info("Catch by dragon - " + dragonPOJO + " for " + person.getUsername());
-                                        logRecordService.saveLogRecord(new LogRecord(person,dragonPOJO.getDragon()));
+                                        logDragonRecordService.saveLogRecord(new LogDragonRecord(person,dragonPOJO.getDragon()));
                                     }
                                 });
                             }));
@@ -85,15 +84,13 @@ public class ScheduledDragonCatcher {
                         if (catchThis(cookieAuthService.getLastCookieAuthByPerson(person).get().getCookies(), code.getUrl())){
                             System.out.println("Catch - " + code + " for " + person.getUsername());
                             logger.info("Catch by code - " + code + " for " + person.getUsername());
+                            logCodeRecordService.saveLogRecord(new LogCodeRecord(person,code.getCode()));
                         }
                     }
                 }
-
             }
         }
     }
-
-
 
     @NotNull
     private boolean catchThis(List<String> cookies, String url) {

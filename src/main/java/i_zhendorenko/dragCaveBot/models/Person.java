@@ -25,7 +25,8 @@ public class Person {
 
     @Column(name = "role")
     private String role;
-
+    @Column(name = "abandon")
+    private Boolean abandon;
     @OneToMany(mappedBy = "person", cascade = CascadeType.ALL)
     private List<CoolCode> coolCodes;
 
@@ -41,7 +42,10 @@ public class Person {
     private List<Dragon> dragons;
 
     @OneToMany(mappedBy = "person")
-    private List<LogRecord> logRecords;
+    private List<LogDragonRecord> logDragonRecords;
+
+    @OneToMany(mappedBy = "person")
+    private List<LogCodeRecord> logCodeRecords;
 
     public Person() {
         dragons = new ArrayList<Dragon>();

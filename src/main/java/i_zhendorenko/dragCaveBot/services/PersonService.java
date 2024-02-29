@@ -61,5 +61,9 @@ public class PersonService {
         return person.getDragons();
     }
 
+    public  Optional<List<Person>> findByAbandonTrue(){
+        return peopleRepository.findByAbandonTrue();
+    }
+
 
 }

@@ -4,7 +4,6 @@ import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,7 +33,7 @@ public class Dragon {
     private List<Person> persons;
 
     @OneToMany(mappedBy = "dragon")
-    private List<LogRecord> logRecords;
+    private List<LogDragonRecord> logDragonRecords;
 
     public Dragon() {
         habitat = new ArrayList<String>();

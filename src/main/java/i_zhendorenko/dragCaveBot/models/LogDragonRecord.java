@@ -1,14 +1,11 @@
 package i_zhendorenko.dragCaveBot.models;
 
-import i_zhendorenko.dragCaveBot.models.Dragon;
-import i_zhendorenko.dragCaveBot.models.Person;
-
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "log_record")
-public class LogRecord {
+public class LogDragonRecord {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,11 +22,11 @@ public class LogRecord {
     @JoinColumn(name = "dragon_id")
     private Dragon dragon;
 
-    public LogRecord() {
+    public LogDragonRecord() {
         this.dateTime = LocalDateTime.now();
     }
 
-    public LogRecord(Person person, Dragon dragon) {
+    public LogDragonRecord(Person person, Dragon dragon) {
         this.person = person;
         this.dragon = dragon;
         this.dateTime = LocalDateTime.now();

@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -32,6 +34,33 @@ public class ResponseEjector {
     public ResponseEjector(DragonService dragonService, StringSimpler stringSimpler) {
         this.dragonService = dragonService;
         this.stringSimpler = stringSimpler;
+    }
+    public List<Code> ejectdragonName(List<String> cookies){
+        List<String> res = new ArrayList<>();
+        String url = "https://dragcave.net/dragons/1,1,0";
+        // Преобразование списка куки в строку
+        String cookiesString = String.join("; ", cookies);
+
+        try {
+            Document doc = Jsoup.connect(url).header("Cookie", cookiesString).get();
+            Elements rows = doc.select("tbody tr");
+
+            for (Element row : rows) {
+                Element nameElement = row.selectFirst("td i");
+                if (nameElement != null) {
+                    res.add(nameElement.text());
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+         res = res.stream()
+                .filter(code -> !code.trim().isEmpty())
+                .collect(Collectors.toList());
+        res.replaceAll(str -> str.replaceAll("^\\(|\\)$", ""));
+
+        return res.stream().map(Code::new).collect(Collectors.toList());
     }
     public List<Code> ejectCode(String Response){
         List<Code> res = new LinkedList<Code>();
