@@ -73,8 +73,10 @@ public class ScheduledDragonAbandoner {
                 String url = "https://dragcave.net/actions/" + egg + "/abandon";
                 // Отправка POST-запроса
                 ResponseEntity<String> response = restTemplate.postForEntity(url, request, String.class);
+                if (response.getBody().contains("walk away")){
+                    logger.info("abandon - " + egg + " for " + person.getUsername());
+                }
                 System.out.println("Response abandon action: " + response.getStatusCode());
-                logger.info("abandon - " + egg + " for " + person.getUsername());
 
             }
         }
