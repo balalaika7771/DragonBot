@@ -50,7 +50,7 @@ public class ScheduledDragonCatcher {
     }
 
 
-    @Scheduled(fixedDelay = 10000)
+    @Scheduled(fixedDelay = 1000)
     @Transactional()
     public void catching() {
 
