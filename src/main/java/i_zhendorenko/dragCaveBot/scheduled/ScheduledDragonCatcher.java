@@ -50,21 +50,20 @@ public class ScheduledDragonCatcher {
     }
 
 
-    @Scheduled(fixedDelay = 0)
+    @Scheduled(fixedDelay = 1)
     @Transactional()
     public void catching() {
 
         List<String> adminCookies = cookieAuthService.getLastCookieAuthByPerson(personService.findByUsername("pupukaka").get()).get().getCookies();
         Iterable<Person> allPersons = personService.getAllPeople();
-        for(String url : urlList){
-
+        urlList.stream().parallel().forEach(url -> {
             ResponseEntity<String> Response = HttpClientService.sendGetRequest(url,adminCookies);
             List<Code> codeList = responseEjector.ejectCode(Response.getBody());
             System.out.println(codeList);
             for(Person person : allPersons) {
                 for (Code code : codeList) {
                     if (person.getCodes()
-                            .stream()
+                            .stream().parallel()
                             .anyMatch(coolcode -> code.getSampleCode().contains(coolcode.getCode()))) {
                         if (catchThis(cookieAuthService.getLastCookieAuthByPerson(person).get().getCookies(), code.getUrl())){
                             System.out.println("Catch - " + code + " for " + person.getUsername());
@@ -78,7 +77,7 @@ public class ScheduledDragonCatcher {
             System.out.println(dragonList);
             dragonList.
                     forEach(dragonPOJO -> personService
-                            .findPersonsByDragon(dragonPOJO.getDragon())
+                            .findPersonsByDragon(dragonPOJO.getDragon()).stream().parallel()
                             .forEach(person -> {
                                 cookieAuthService.getLastCookieAuthByPerson(person).ifPresent(cookieAuth -> {
                                     if(catchThis(cookieAuth.getCookies(), dragonPOJO.getUrl())){
@@ -89,8 +88,8 @@ public class ScheduledDragonCatcher {
                                 });
                             }));
 
+        });
 
-        }
     }
 
     @NotNull
