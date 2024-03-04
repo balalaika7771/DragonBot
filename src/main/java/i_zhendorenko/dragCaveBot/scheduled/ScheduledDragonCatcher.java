@@ -56,14 +56,14 @@ public class ScheduledDragonCatcher {
 
         List<String> adminCookies = cookieAuthService.getLastCookieAuthByPerson(personService.findByUsername("pupukaka").get()).get().getCookies();
         Iterable<Person> allPersons = personService.getAllPeople();
-        urlList.stream().parallel().forEach(url -> {
+        urlList.forEach(url -> {
             ResponseEntity<String> Response = HttpClientService.sendGetRequest(url,adminCookies);
             List<Code> codeList = responseEjector.ejectCode(Response.getBody());
             System.out.println(codeList);
             for(Person person : allPersons) {
                 for (Code code : codeList) {
                     if (person.getCodes()
-                            .stream().parallel()
+                            .stream()
                             .anyMatch(coolcode -> code.getSampleCode().contains(coolcode.getCode()))) {
                         if (catchThis(cookieAuthService.getLastCookieAuthByPerson(person).get().getCookies(), code.getUrl())){
                             System.out.println("Catch - " + code + " for " + person.getUsername());
@@ -77,7 +77,7 @@ public class ScheduledDragonCatcher {
             System.out.println(dragonList);
             dragonList.
                     forEach(dragonPOJO -> personService
-                            .findPersonsByDragon(dragonPOJO.getDragon()).stream().parallel()
+                            .findPersonsByDragon(dragonPOJO.getDragon())
                             .forEach(person -> {
                                 cookieAuthService.getLastCookieAuthByPerson(person).ifPresent(cookieAuth -> {
                                     if(catchThis(cookieAuth.getCookies(), dragonPOJO.getUrl())){
