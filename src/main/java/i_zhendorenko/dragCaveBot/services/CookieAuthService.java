@@ -4,6 +4,7 @@ import i_zhendorenko.dragCaveBot.models.CookieAuth;
 import i_zhendorenko.dragCaveBot.models.Person;
 import i_zhendorenko.dragCaveBot.repositories.CookieAuthRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,6 +27,7 @@ public class CookieAuthService {
         return cookieAuthRepository.save(cookieAuth);
     }
 
+    @Cacheable("CookieAuth")
     public Optional<CookieAuth> getLastCookieAuthByPerson(Person person) {
         return cookieAuthRepository.findTopByPersonOrderByIdDesc(person);
     }

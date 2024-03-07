@@ -5,6 +5,7 @@ import i_zhendorenko.dragCaveBot.models.Dragon;
 import i_zhendorenko.dragCaveBot.models.Person;
 import i_zhendorenko.dragCaveBot.repositories.DragonRepository;
 import javassist.NotFoundException;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +28,7 @@ public class DragonService {
 
     }
 
+    @Cacheable("Dragon")
     public Optional<Dragon> findByName(String name) throws NotFoundException,IllegalStateException {
         Optional<List<Dragon>> dragons = dragonRepository.findByName(name);
         if(dragons.isEmpty()){
