@@ -4,6 +4,7 @@ import i_zhendorenko.dragCaveBot.models.CoolCode;
 import i_zhendorenko.dragCaveBot.models.Person;
 import i_zhendorenko.dragCaveBot.repositories.CoolCodeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -22,6 +23,7 @@ public class CoolCodeService {
     }
 
     // Получение всех кодов по объекту Person
+    @Cacheable("CoolCode")
     public List<CoolCode> getAllCodesByPerson(Person person) {
         return coolCodeRepository.findByPerson(person);
     }
