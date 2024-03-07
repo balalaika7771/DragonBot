@@ -50,30 +50,14 @@ public class ScheduledDragonCatcher {
     }
 
 
-    @Scheduled(fixedDelay = 10000)
+    @Scheduled(fixedDelay = 1)
     @Transactional()
     public void catching() {
 
         List<String> adminCookies = cookieAuthService.getLastCookieAuthByPerson(personService.findByUsername("pupukaka").get()).get().getCookies();
         Iterable<Person> allPersons = personService.getAllPeople();
-        for(String url : urlList){
-            //получаем ответ от запроса
+        urlList.forEach(url -> {
             ResponseEntity<String> Response = HttpClientService.sendGetRequest(url,adminCookies);
-            List<DragonPOJO> dragonList = responseEjector.ejectDragon(Response.getBody());
-            System.out.println(dragonList);
-            dragonList.
-                    forEach(dragonPOJO -> personService
-                            .findPersonsByDragon(dragonPOJO.getDragon())
-                            .forEach(person -> {
-                                cookieAuthService.getLastCookieAuthByPerson(person).ifPresent(cookieAuth -> {
-                                    if(catchThis(cookieAuth.getCookies(), dragonPOJO.getUrl())){
-                                        System.out.println("Catch - " + dragonPOJO + " for " + person.getUsername());
-                                        logger.info("Catch by dragon - " + dragonPOJO + " for " + person.getUsername());
-                                        logDragonRecordService.saveLogRecord(new LogDragonRecord(person,dragonPOJO.getDragon()));
-                                    }
-                                });
-                            }));
-
             List<Code> codeList = responseEjector.ejectCode(Response.getBody());
             System.out.println(codeList);
             for(Person person : allPersons) {
@@ -89,7 +73,23 @@ public class ScheduledDragonCatcher {
                     }
                 }
             }
-        }
+            List<DragonPOJO> dragonList = responseEjector.ejectDragon(Response.getBody());
+            System.out.println(dragonList);
+            dragonList.
+                    forEach(dragonPOJO -> personService
+                            .findPersonsByDragon(dragonPOJO.getDragon())
+                            .forEach(person -> {
+                                cookieAuthService.getLastCookieAuthByPerson(person).ifPresent(cookieAuth -> {
+                                    if(catchThis(cookieAuth.getCookies(), dragonPOJO.getUrl())){
+                                        System.out.println("Catch - " + dragonPOJO + " for " + person.getUsername());
+                                        logger.info("Catch by dragon - " + dragonPOJO + " for " + person.getUsername());
+                                        logDragonRecordService.saveLogRecord(new LogDragonRecord(person,dragonPOJO.getDragon()));
+                                    }
+                                });
+                            }));
+
+        });
+
     }
 
     @NotNull
