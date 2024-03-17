@@ -1,6 +1,5 @@
 package i_zhendorenko.dragCaveBot.controllers;
 
-
 import i_zhendorenko.dragCaveBot.DTO.DragonDTO;
 import i_zhendorenko.dragCaveBot.models.Dragon;
 import i_zhendorenko.dragCaveBot.models.Person;
@@ -8,24 +7,18 @@ import i_zhendorenko.dragCaveBot.security.PersonDetails;
 import i_zhendorenko.dragCaveBot.services.DragonService;
 import i_zhendorenko.dragCaveBot.services.PersonService;
 import javassist.NotFoundException;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.stereotype.Controller;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
-@Controller
+@RestController
+@RequestMapping("/api/dragons")
 public class DragonController {
 
     private final DragonService dragonService;
@@ -37,60 +30,58 @@ public class DragonController {
         this.personService = personService;
     }
 
-    @GetMapping("/dragons")
-    public String showAllDragons(Model model) {
+    @GetMapping
+    public ResponseEntity<List<DragonDTO>> showAllDragons() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Object principal = authentication.getPrincipal();
         Person person = ((PersonDetails) principal).getPerson();
 
-        // Получаем список всех драконов
         List<DragonDTO> allDragons = dragonService.getAllDragons()
                 .stream().map(DragonDTO::new).collect(Collectors.toList());
 
-        // Получаем список драконов у текущего пользователя
+        return new ResponseEntity<>(allDragons, HttpStatus.OK);
+    }
+    @GetMapping("/myDragon")
+    public ResponseEntity<List<DragonDTO>> myDragon() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Object principal = authentication.getPrincipal();
+        Person person = ((PersonDetails) principal).getPerson();
+
+
         List<DragonDTO> dragonsForPerson = personService.getDragonsForPerson(person.getId())
                 .stream().map(DragonDTO::new).collect(Collectors.toList());
 
-        model.addAttribute("dragonsForPerson", dragonsForPerson);
 
-        model.addAttribute("allDragons", allDragons);
-
-
-        return "dragon/dragons";
+        return new ResponseEntity<>(dragonsForPerson, HttpStatus.OK);
     }
 
-    @PostMapping("/dragons/add/{name}")
-    public String addDragonToPerson(@PathVariable String name) {
+    @PostMapping("/add/{name}")
+    public ResponseEntity<Void> addDragonToPerson(@PathVariable String name) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Object principal = authentication.getPrincipal();
         Person person = ((PersonDetails) principal).getPerson();
 
-        // Находим дракона по его идентификатору
-        Optional<Dragon> dragon = null;
         try {
-            dragon = dragonService.findByName(name);
+            Dragon dragon = dragonService.findByName(name).orElseThrow(() -> new NotFoundException("Dragon not found"));
+            personService.addDragonToPerson(person.getId(), dragon);
+            return new ResponseEntity<>(HttpStatus.CREATED);
         } catch (NotFoundException e) {
-            return "redirect:/dragons";
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-
-        // Добавляем дракона текущему пользователю
-        personService.addDragonToPerson(person.getId(), dragon.get());
-        return "redirect:/dragons";
     }
-    @PostMapping("/dragons/remove/{name}")
-    public String deleteDragonToPerson(@PathVariable String name) {
+
+    @PostMapping("/remove/{name}")
+    public ResponseEntity<Void> deleteDragonFromPerson(@PathVariable String name) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Object principal = authentication.getPrincipal();
         Person person = ((PersonDetails) principal).getPerson();
 
-        Optional<Dragon> dragon = null;
         try {
-            dragon = dragonService.findByName(name);
+            Dragon dragon = dragonService.findByName(name).orElseThrow(() -> new NotFoundException("Dragon not found"));
+            personService.deleteDragonToPerson(person.getId(), dragon);
+            return new ResponseEntity<>(HttpStatus.OK);
         } catch (NotFoundException e) {
-            return "redirect:/dragons";
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        personService.deleteDragonToPerson(person.getId(), dragon.get());
-
-        return "redirect:/dragons";
     }
 }

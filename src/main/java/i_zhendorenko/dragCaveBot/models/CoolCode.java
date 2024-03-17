@@ -48,5 +48,11 @@ public class CoolCode {
         this.person = person;
     }
 
+    public int getId() {
+        return id;
+    }
 
+    public void setId(int id) {
+        this.id = id;
+    }
 }

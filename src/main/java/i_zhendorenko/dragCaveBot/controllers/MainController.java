@@ -23,6 +23,17 @@ public class MainController {
         return "main";
     }
 
+    @GetMapping("/coolCode")
+    public String coolCode() {
+        return "code/code";
+    }
+
+    @GetMapping("/dragons")
+    public String dragons() {
+        return "dragon/dragons";
+    }
+
+
     @GetMapping("/showUserInfo")
     public String showUserInfo() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -31,6 +42,7 @@ public class MainController {
 
         return "main";
     }
+
 
 
 }

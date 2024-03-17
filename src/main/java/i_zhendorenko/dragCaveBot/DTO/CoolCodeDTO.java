@@ -12,6 +12,7 @@ public class CoolCodeDTO {
     }
     public CoolCodeDTO(CoolCode coolCode){
         this.mycode = coolCode.getCode();
+        this.id = coolCode.getId();
     }
 
     @Override
@@ -31,12 +32,20 @@ public class CoolCodeDTO {
     }
 
     private String mycode;
-
+    private int id;
     public String getCode() {
         return mycode;
     }
 
     public void setCode(String mycode) {
         this.mycode = mycode;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

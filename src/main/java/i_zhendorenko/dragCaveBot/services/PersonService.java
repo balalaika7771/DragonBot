@@ -30,7 +30,7 @@ public class PersonService {
         return person;
     }
 
-    @Cacheable("AllPeople")
+
     public List<Person> getAllPeople() {
         // Используем метод findAll() для получения списка всех записей
         return peopleRepository.findAll();
@@ -40,7 +40,7 @@ public class PersonService {
         return  peopleRepository.findByUsername(username);
     }
 
-    @Cacheable("PersonsByDragon")
+
     public List<Person> findPersonsByDragon(Dragon dragon) {
         return peopleRepository.findByDragons(dragon);
     }
@@ -58,7 +58,7 @@ public class PersonService {
         peopleRepository.save(person);
     }
 
-    @Cacheable("DragonsForPerson")
+
     public List<Dragon> getDragonsForPerson(int personId) {
         Person person = peopleRepository.findById(personId)
                 .orElseThrow(() -> new RuntimeException("Person not found"));
