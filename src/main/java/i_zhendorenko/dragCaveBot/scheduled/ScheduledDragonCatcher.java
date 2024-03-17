@@ -43,11 +43,6 @@ public class ScheduledDragonCatcher {
         this.logCodeRecordService = logCodeRecordService;
 
     }
-    @Scheduled(cron = "0 0/5 * * * ?")
-    @Transactional()
-    public void InFiveMinutes(){
-        catching();
-    }
 
 
     @Scheduled(fixedDelay = 1)

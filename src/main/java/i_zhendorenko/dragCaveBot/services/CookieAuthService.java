@@ -27,7 +27,7 @@ public class CookieAuthService {
         return cookieAuthRepository.save(cookieAuth);
     }
 
-    @Cacheable("CookieAuth")
+
     public Optional<CookieAuth> getLastCookieAuthByPerson(Person person) {
         return cookieAuthRepository.findTopByPersonOrderByIdDesc(person);
     }

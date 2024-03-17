@@ -23,7 +23,7 @@ public class CoolCodeService {
     }
 
     // Получение всех кодов по объекту Person
-    @Cacheable("CoolCode")
+
     public List<CoolCode> getAllCodesByPerson(Person person) {
         return coolCodeRepository.findByPerson(person);
     }

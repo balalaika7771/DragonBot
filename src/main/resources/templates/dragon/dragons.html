@@ -1,100 +1,103 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dragons</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f5f5f5;
-            margin: 0;
-            padding: 0;
-        }
-
         .container {
             max-width: 800px;
             margin: 0 auto;
             padding: 20px;
         }
-
-        h2 {
-            text-align: center;
-            color: #007bff;
-            margin-bottom: 20px;
-        }
-
-        ul {
-            list-style-type: none;
+        .dragon-list {
+            list-style: none;
             padding: 0;
-            margin: 0;
         }
-
-        li {
-            background-color: #fff;
+        .dragon-item {
             padding: 10px;
-            border-bottom: 1px solid #ccc;
+            border: 1px solid #ddd;
+            margin-bottom: 5px;
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            margin-bottom: 10px;
-            transition: all 0.3s ease;
+            justify-content: space-between;
         }
-
-        li:hover {
-            background-color: #f0f0f0;
-        }
-
-        button {
-            padding: 8px 20px;
-            border: none;
-            border-radius: 5px;
-            background-color: #007bff;
-            color: #fff;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        button:hover {
-            background-color: #0056b3;
-        }
-
-        form {
-            display: inline;
-        }
-
-        .owned {
-            color: green;
-            font-weight: bold;
+        .action-buttons {
+            margin-top: 20px;
         }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2>All Dragons</h2>
-    <ul>
-        <!-- Выводим список всех драконов -->
-        <li th:each="dragon : ${allDragons}">
-            <span th:text="${dragon.name}"></span>
-
-            <!-- Проверяем, принадлежит ли дракон пользователю -->
-            <span th:if="${dragonsForPerson.contains(dragon)}" class="owned">
-                (Owned)
-                <!-- Добавляем кнопку удаления дракона -->
-                <form th:action="@{/dragons/remove/{name}(name=${dragon.name})}" method="post">
-                    <button type="submit">Remove from My Dragons</button>
-                </form>
-            </span>
-
-            <!-- Добавляем кнопку добавления дракона -->
-            <span th:unless="${dragonsForPerson.contains(dragon)}">
-                <form th:action="@{/dragons/add/{name}(name=${dragon.name})}" method="post">
-                    <button type="submit">Add to My Dragons</button>
-                </form>
-            </span>
-        </li>
+    <ul id="dragons-list" class="dragon-list">
+        <!-- Dragons will be listed here -->
     </ul>
+    <div class="action-buttons">
+        <button onclick="saveChanges()">Save Changes</button>
+    </div>
 </div>
+
+<script>
+    let allDragons = [];
+    let myDragons = [];
+
+    function fetchDragons() {
+        fetch('/api/dragons')
+            .then(response => response.json())
+            .then(data => {
+                allDragons = data;
+                fetchMyDragons();
+            });
+    }
+
+    function fetchMyDragons() {
+        fetch('/api/dragons/myDragon')
+            .then(response => response.json())
+            .then(data => {
+                myDragons = data.map(dragon => dragon.name);
+                displayDragons();
+            });
+    }
+
+    function displayDragons() {
+        const list = document.getElementById('dragons-list');
+        list.innerHTML = ''; // Clear the list
+
+        allDragons.forEach(dragon => {
+            const item = document.createElement('li');
+            item.className = 'dragon-item';
+            item.innerHTML = `
+                <span>${dragon.name}</span>
+                <input type="checkbox" data-name="${dragon.name}" ${myDragons.includes(dragon.name) ? 'checked' : ''}>
+            `;
+            list.appendChild(item);
+        });
+    }
+
+    function saveChanges() {
+        const checkboxes = document.querySelectorAll('#dragons-list input[type="checkbox"]');
+        checkboxes.forEach(checkbox => {
+            const dragonName = checkbox.dataset.name;
+            if (checkbox.checked && !myDragons.includes(dragonName)) {
+                // Add dragon to user
+                fetch(`/api/dragons/add/${dragonName}`, { method: 'POST' });
+            } else if (!checkbox.checked && myDragons.includes(dragonName)) {
+                // Remove dragon from user
+                fetch(`/api/dragons/remove/${dragonName}`, { method: 'POST' });
+            }
+        });
+
+        setTimeout(() => {
+            // Fetch dragons again after a delay to give time for changes to be processed
+            fetchMyDragons();
+        }, 1000); // Adjust delay as necessary based on server response time
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        fetchDragons();
+    });
+</script>
 
 </body>
 </html>

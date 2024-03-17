@@ -6,7 +6,7 @@ import java.util.Objects;
 
 public class DragonDTO {
 
-
+    private int id;
     private String name;
     @Override
     public boolean equals(Object o) {
@@ -26,6 +26,7 @@ public class DragonDTO {
     }
     public DragonDTO(Dragon dragon) {
         this.name = dragon.getName();
+        this.id = dragon.getId();
     }
 
     public String getName() {
@@ -36,9 +37,18 @@ public class DragonDTO {
         this.name = name;
     }
 
+
     @Override
     public String toString() {
         return name;
     }
 
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 }

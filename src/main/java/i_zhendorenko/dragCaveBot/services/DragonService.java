@@ -28,7 +28,7 @@ public class DragonService {
 
     }
 
-    @Cacheable("Dragon")
+
     public Optional<Dragon> findByName(String name) throws NotFoundException,IllegalStateException {
         Optional<List<Dragon>> dragons = dragonRepository.findByName(name);
         if(dragons.isEmpty()){
