@@ -163,7 +163,11 @@
 }
 
 
-
+function selectAll() {
+        document.querySelectorAll('#codes-list input[type="checkbox"]').forEach(checkbox => {
+            checkbox.checked = true;
+        });
+    }
 
 
 
